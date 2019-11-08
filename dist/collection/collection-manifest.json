@@ -2,8 +2,8 @@
   "entries": [
     "components\\traim-accordion-pane\\traim-accordion-pane.js",
     "components\\traim-accordion\\traim-accordion.js",
-    "components\\traim-autocomplete\\traim-autocomplete.js",
     "components\\traim-timeline-item\\traim-timeline-item.js",
+    "components\\traim-autocomplete\\traim-autocomplete.js",
     "components\\traim-timeline\\traim-timeline.js"
   ],
   "compiler": {

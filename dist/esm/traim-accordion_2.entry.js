@@ -1,4 +1,4 @@
-import { r as registerInstance, c as createEvent, h, g as getElement } from './core-7b09a8d3.js';
+import { r as registerInstance, c as createEvent, h, g as getElement } from './core-07bc71c3.js';
 
 const TraimAccordion = class {
     constructor(hostRef) {
