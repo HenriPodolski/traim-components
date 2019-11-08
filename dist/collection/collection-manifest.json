@@ -1,0 +1,16 @@
+{
+  "entries": [
+    "components\\traim-accordion-pane\\traim-accordion-pane.js",
+    "components\\traim-accordion\\traim-accordion.js",
+    "components\\traim-autocomplete\\traim-autocomplete.js",
+    "components\\traim-timeline-item\\traim-timeline-item.js",
+    "components\\traim-timeline\\traim-timeline.js"
+  ],
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "1.7.5",
+    "typescriptVersion": "3.6.3"
+  },
+  "collections": [],
+  "bundles": []
+}
