@@ -1,0 +1,53 @@
+@import "../../scss/variables";
+
+:host {
+  display: block;
+}
+
+.timeline {
+  margin: 0.55em 0 0;
+  padding: 0;
+
+  &.is-alternate {
+    .timeline-item {
+      &::before,
+      &::after {
+        left: 50%;
+        content: '';
+      }
+
+      &::after {
+        margin: 0 0 0 -0.25em;
+      }
+
+      &__body {
+        left: 50%;
+        width: 50%;
+      }
+
+      &is-left .timeline-item__body {
+        left: 0;
+        margin: 0 0 0 -1em;
+        text-align: right;
+      }
+    }
+  }
+
+  &.is-loading {
+    .timeline-item.is-last::before {
+      border-left-style: dashed;
+      content: '';
+    }
+
+    .timeline-item.is-loading::after {
+      background-color: transparent;
+      border: 2px solid var(--color-default);
+    }
+
+    .timeline-item.is-loading {
+      .timeline-item__body {
+        color: var(--color-text);
+      }
+    }
+  }
+}
