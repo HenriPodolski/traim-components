@@ -23,8 +23,18 @@ export namespace Components {
     'show': () => Promise<void>;
   }
   interface TraimAutocomplete {
+    'items': Array<IAutoCompleteItem>;
     'placeholder': string;
     'setItems': (items: IAutoCompleteItem[]) => Promise<void>;
+  }
+  interface TraimTab {
+    'disabled': boolean;
+    'header': string;
+    'open': boolean;
+  }
+  interface TraimTabs {
+    'currentTab': () => Promise<number>;
+    'openTab': (tabIndex: number) => Promise<void>;
   }
   interface TraimTimeline {
     'alternate': boolean;
@@ -59,6 +69,18 @@ declare global {
     new (): HTMLTraimAutocompleteElement;
   };
 
+  interface HTMLTraimTabElement extends Components.TraimTab, HTMLStencilElement {}
+  var HTMLTraimTabElement: {
+    prototype: HTMLTraimTabElement;
+    new (): HTMLTraimTabElement;
+  };
+
+  interface HTMLTraimTabsElement extends Components.TraimTabs, HTMLStencilElement {}
+  var HTMLTraimTabsElement: {
+    prototype: HTMLTraimTabsElement;
+    new (): HTMLTraimTabsElement;
+  };
+
   interface HTMLTraimTimelineElement extends Components.TraimTimeline, HTMLStencilElement {}
   var HTMLTraimTimelineElement: {
     prototype: HTMLTraimTimelineElement;
@@ -74,6 +96,8 @@ declare global {
     'traim-accordion': HTMLTraimAccordionElement;
     'traim-accordion-pane': HTMLTraimAccordionPaneElement;
     'traim-autocomplete': HTMLTraimAutocompleteElement;
+    'traim-tab': HTMLTraimTabElement;
+    'traim-tabs': HTMLTraimTabsElement;
     'traim-timeline': HTMLTraimTimelineElement;
     'traim-timeline-item': HTMLTraimTimelineItemElement;
   }
@@ -90,9 +114,18 @@ declare namespace LocalJSX {
     'open'?: boolean;
   }
   interface TraimAutocomplete {
-    'onSearch'?: (event: CustomEvent<any>) => void;
-    'onSelect'?: (event: CustomEvent<any>) => void;
+    'items'?: Array<IAutoCompleteItem>;
+    'onSearchAutocompleteItem'?: (event: CustomEvent<any>) => void;
+    'onSelectAutocompleteItem'?: (event: CustomEvent<any>) => void;
     'placeholder'?: string;
+  }
+  interface TraimTab {
+    'disabled'?: boolean;
+    'header'?: string;
+    'open'?: boolean;
+  }
+  interface TraimTabs {
+    'onChangeTab'?: (event: CustomEvent<any>) => void;
   }
   interface TraimTimeline {
     'alternate'?: boolean;
@@ -109,6 +142,8 @@ declare namespace LocalJSX {
     'traim-accordion': TraimAccordion;
     'traim-accordion-pane': TraimAccordionPane;
     'traim-autocomplete': TraimAutocomplete;
+    'traim-tab': TraimTab;
+    'traim-tabs': TraimTabs;
     'traim-timeline': TraimTimeline;
     'traim-timeline-item': TraimTimelineItem;
   }
@@ -123,6 +158,8 @@ declare module "@stencil/core" {
       'traim-accordion': LocalJSX.TraimAccordion & JSXBase.HTMLAttributes<HTMLTraimAccordionElement>;
       'traim-accordion-pane': LocalJSX.TraimAccordionPane & JSXBase.HTMLAttributes<HTMLTraimAccordionPaneElement>;
       'traim-autocomplete': LocalJSX.TraimAutocomplete & JSXBase.HTMLAttributes<HTMLTraimAutocompleteElement>;
+      'traim-tab': LocalJSX.TraimTab & JSXBase.HTMLAttributes<HTMLTraimTabElement>;
+      'traim-tabs': LocalJSX.TraimTabs & JSXBase.HTMLAttributes<HTMLTraimTabsElement>;
       'traim-timeline': LocalJSX.TraimTimeline & JSXBase.HTMLAttributes<HTMLTraimTimelineElement>;
       'traim-timeline-item': LocalJSX.TraimTimelineItem & JSXBase.HTMLAttributes<HTMLTraimTimelineItemElement>;
     }

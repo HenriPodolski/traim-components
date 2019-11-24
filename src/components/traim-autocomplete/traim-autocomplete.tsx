@@ -10,14 +10,14 @@ export class TraimAutocomplete {
   @Prop()
   placeholder: string;
 
-  @Event({ eventName: 'select' })
+  @Prop({ mutable: true })
+  items: Array<IAutoCompleteItem> = [];
+
+  @Event({ eventName: 'selectAutocompleteItem' })
   onSelect: EventEmitter;
 
-  @Event({ eventName: 'search' })
+  @Event({ eventName: 'searchAutocompleteItem' })
   onSearch: EventEmitter;
-
-  @State()
-  items: Array<IAutoCompleteItem> = [];
 
   @State()
   selectedItem: IAutoCompleteItem;
@@ -32,7 +32,7 @@ export class TraimAutocomplete {
   value: string;
 
   @Method()
-  setItems(items: Array<IAutoCompleteItem>) {
+  async setItems(items: Array<IAutoCompleteItem>) {
     this.items = items;
     this.value ? this.open() : this.close();
   }
@@ -40,7 +40,7 @@ export class TraimAutocomplete {
   select(item: IAutoCompleteItem) {
     this.activeItem = item;
     this.selectedItem = item;
-    this.value = item.text;
+    this.value = item.key;
     this.onSelect.emit(item);
     this.close();
   }
@@ -96,7 +96,7 @@ export class TraimAutocomplete {
 
   render() {
     return (
-      <div class="o-field o-field--autocomplete">
+      <div class="autocomplete">
         <input
           type="search"
           class="c-field"
@@ -113,7 +113,7 @@ export class TraimAutocomplete {
               const isActiveClass = this.activeItem === item ? 'c-card__control--active' : '';
               return (
                 <button role="menuitem" class={`c-card__control ${isActiveClass}`} onClick={() => this.select(item)}>
-                  {item.text}
+                  {item.value}
                 </button>
               );
             })}

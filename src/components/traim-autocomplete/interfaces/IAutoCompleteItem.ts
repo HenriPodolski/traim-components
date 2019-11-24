@@ -1,3 +1,4 @@
 export default interface IAutoCompleteItem {
-  text: string;
+  key: string;
+  value: string;
 }

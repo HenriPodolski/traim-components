@@ -7,17 +7,18 @@
 
 ## Properties
 
-| Property      | Attribute     | Description | Type     | Default     |
-| ------------- | ------------- | ----------- | -------- | ----------- |
-| `placeholder` | `placeholder` |             | `string` | `undefined` |
+| Property      | Attribute     | Description | Type                  | Default     |
+| ------------- | ------------- | ----------- | --------------------- | ----------- |
+| `items`       | --            |             | `IAutoCompleteItem[]` | `[]`        |
+| `placeholder` | `placeholder` |             | `string`              | `undefined` |
 
 
 ## Events
 
-| Event    | Description | Type               |
-| -------- | ----------- | ------------------ |
-| `search` |             | `CustomEvent<any>` |
-| `select` |             | `CustomEvent<any>` |
+| Event                    | Description | Type               |
+| ------------------------ | ----------- | ------------------ |
+| `searchAutocompleteItem` |             | `CustomEvent<any>` |
+| `selectAutocompleteItem` |             | `CustomEvent<any>` |
 
 
 ## Methods

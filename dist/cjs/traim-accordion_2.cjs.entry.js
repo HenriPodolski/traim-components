@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const core = require('./core-53ba8d32.js');
+const core = require('./core-fbc63386.js');
 
 const TraimAccordion = class {
     constructor(hostRef) {

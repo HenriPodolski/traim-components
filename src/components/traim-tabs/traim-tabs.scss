@@ -1,0 +1,90 @@
+@import "../../scss/variables";
+
+@mixin disabled {
+  &:disabled,
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+}
+
+@mixin button-nude {
+  @include disabled;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  text-align: inherit;
+  text-decoration: inherit;
+  vertical-align: inherit;
+  background: inherit;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  appearance: none;
+
+  &:not(:disabled):not([disabled]) {
+    &:active {
+      background-color: transparent;
+    }
+
+    &:not(:active) {
+      &:focus {
+        border-color: var(--border-color-focus);
+        box-shadow: var(--box-shadow-focus);
+      }
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+.tabs {
+  &__tablist[role='tablist'] {
+    display: block;
+  }
+
+  &__headings {
+    display: flex;
+    text-align: center;
+  }
+
+  &__nav {
+    overflow: hidden;
+
+    .tabs__headings {
+      margin-bottom: -1em;
+      padding-bottom: 1em;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  }
+
+  &__heading[role='tab'] {
+    --tab-heading-border-color: var(--color-default);
+
+    @include button-nude;
+
+    display: block;
+    flex: 1;
+    margin: 0;
+    padding: var(--spacing-medium);
+    white-space: nowrap;
+    border-bottom: var(--spacing-xsmall) solid var(--color-background);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+
+    &:not(:disabled):not(.is-active):hover {
+      border-bottom-color: var(--tab-heading-border-color);
+    }
+
+    &.is-active {
+      background-color: var(--color-background);
+      border-bottom-color: var(--tab-heading-border-color);
+    }
+  }
+}

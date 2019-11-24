@@ -3,14 +3,14 @@ export class TraimAutocomplete {
     constructor() {
         this.items = [];
     }
-    setItems(items) {
+    async setItems(items) {
         this.items = items;
         this.value ? this.open() : this.close();
     }
     select(item) {
         this.activeItem = item;
         this.selectedItem = item;
-        this.value = item.text;
+        this.value = item.key;
         this.onSelect.emit(item);
         this.close();
     }
@@ -58,11 +58,11 @@ export class TraimAutocomplete {
         }
     }
     render() {
-        return (h("div", { class: "o-field o-field--autocomplete" },
+        return (h("div", { class: "autocomplete" },
             h("input", { type: "search", class: "c-field", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: (e) => this.search(e), onFocus: () => this.open(), onClick: () => this.open() }),
             this._isOpen && (h("div", { role: "menu", class: "c-card c-card--menu" }, this.items.map((item) => {
                 const isActiveClass = this.activeItem === item ? 'c-card__control--active' : '';
-                return (h("button", { role: "menuitem", class: `c-card__control ${isActiveClass}`, onClick: () => this.select(item) }, item.text));
+                return (h("button", { role: "menuitem", class: `c-card__control ${isActiveClass}`, onClick: () => this.select(item) }, item.value));
             })))));
     }
     static get is() { return "traim-autocomplete"; }
@@ -90,10 +90,33 @@ export class TraimAutocomplete {
             },
             "attribute": "placeholder",
             "reflect": false
+        },
+        "items": {
+            "type": "unknown",
+            "mutable": true,
+            "complexType": {
+                "original": "Array<IAutoCompleteItem>",
+                "resolved": "IAutoCompleteItem[]",
+                "references": {
+                    "Array": {
+                        "location": "global"
+                    },
+                    "IAutoCompleteItem": {
+                        "location": "import",
+                        "path": "./interfaces"
+                    }
+                }
+            },
+            "required": false,
+            "optional": false,
+            "docs": {
+                "tags": [],
+                "text": ""
+            },
+            "defaultValue": "[]"
         }
     }; }
     static get states() { return {
-        "items": {},
         "selectedItem": {},
         "activeItem": {},
         "_isOpen": {},
@@ -101,7 +124,7 @@ export class TraimAutocomplete {
     }; }
     static get events() { return [{
             "method": "onSelect",
-            "name": "select",
+            "name": "selectAutocompleteItem",
             "bubbles": true,
             "cancelable": true,
             "composed": true,
@@ -116,7 +139,7 @@ export class TraimAutocomplete {
             }
         }, {
             "method": "onSearch",
-            "name": "search",
+            "name": "searchAutocompleteItem",
             "bubbles": true,
             "cancelable": true,
             "composed": true,
@@ -139,6 +162,9 @@ export class TraimAutocomplete {
                         "text": ""
                     }],
                 "references": {
+                    "Promise": {
+                        "location": "global"
+                    },
                     "Array": {
                         "location": "global"
                     },

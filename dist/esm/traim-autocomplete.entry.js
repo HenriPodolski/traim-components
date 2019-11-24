@@ -4,17 +4,17 @@ const TraimAutocomplete = class {
     constructor(hostRef) {
         registerInstance(this, hostRef);
         this.items = [];
-        this.onSelect = createEvent(this, "select", 7);
-        this.onSearch = createEvent(this, "search", 7);
+        this.onSelect = createEvent(this, "selectAutocompleteItem", 7);
+        this.onSearch = createEvent(this, "searchAutocompleteItem", 7);
     }
-    setItems(items) {
+    async setItems(items) {
         this.items = items;
         this.value ? this.open() : this.close();
     }
     select(item) {
         this.activeItem = item;
         this.selectedItem = item;
-        this.value = item.text;
+        this.value = item.key;
         this.onSelect.emit(item);
         this.close();
     }
@@ -62,12 +62,12 @@ const TraimAutocomplete = class {
         }
     }
     render() {
-        return (h("div", { class: "o-field o-field--autocomplete" }, h("input", { type: "search", class: "c-field", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: (e) => this.search(e), onFocus: () => this.open(), onClick: () => this.open() }), this._isOpen && (h("div", { role: "menu", class: "c-card c-card--menu" }, this.items.map((item) => {
+        return (h("div", { class: "autocomplete" }, h("input", { type: "search", class: "c-field", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: (e) => this.search(e), onFocus: () => this.open(), onClick: () => this.open() }), this._isOpen && (h("div", { role: "menu", class: "c-card c-card--menu" }, this.items.map((item) => {
             const isActiveClass = this.activeItem === item ? 'c-card__control--active' : '';
-            return (h("button", { role: "menuitem", class: `c-card__control ${isActiveClass}`, onClick: () => this.select(item) }, item.text));
+            return (h("button", { role: "menuitem", class: `c-card__control ${isActiveClass}`, onClick: () => this.select(item) }, item.value));
         })))));
     }
-    static get style() { return ":host{display:block}"; }
+    static get style() { return ":host{display:block}.autocomplete .c-field{border-radius:0}.autocomplete:not(:first-child) .c-field{border-left-width:0}.autocomplete:first-child .c-field{border-top-left-radius:var(--border-radius);border-bottom-left-radius:var(--border-radius)}.autocomplete:last-child .c-field{border-top-right-radius:var(--border-radius);border-bottom-right-radius:var(--border-radius)}"; }
 };
 
 export { TraimAutocomplete as traim_autocomplete };

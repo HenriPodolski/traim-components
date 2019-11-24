@@ -1,3 +1,18 @@
 :host {
   display: block;
 }
+
+.autocomplete .c-field {
+  border-radius: 0;
+}
+.autocomplete:not(:first-child) .c-field {
+  border-left-width: 0;
+}
+.autocomplete:first-child .c-field {
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
+}
+.autocomplete:last-child .c-field {
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
