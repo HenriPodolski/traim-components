@@ -122,6 +122,7 @@ declare namespace LocalJSX {
   interface TraimTab {
     'disabled'?: boolean;
     'header'?: string;
+    'onChangeTabHeader'?: (event: CustomEvent<any>) => void;
     'open'?: boolean;
   }
   interface TraimTabs {

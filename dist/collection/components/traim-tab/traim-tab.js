@@ -1,5 +1,8 @@
 import { h } from "@stencil/core";
 export class TraimTab {
+    watchHeader() {
+        this.onTabHeaderChange.emit({});
+    }
     render() {
         return (h("div", { role: "tabpanel", hidden: !this.open, class: `tab` },
             h("slot", null)));
@@ -15,7 +18,7 @@ export class TraimTab {
     static get properties() { return {
         "header": {
             "type": "string",
-            "mutable": false,
+            "mutable": true,
             "complexType": {
                 "original": "string",
                 "resolved": "string",
@@ -28,7 +31,7 @@ export class TraimTab {
                 "text": ""
             },
             "attribute": "header",
-            "reflect": false
+            "reflect": true
         },
         "disabled": {
             "type": "boolean",
@@ -65,4 +68,24 @@ export class TraimTab {
             "reflect": false
         }
     }; }
+    static get events() { return [{
+            "method": "onTabHeaderChange",
+            "name": "changeTabHeader",
+            "bubbles": true,
+            "cancelable": true,
+            "composed": true,
+            "docs": {
+                "tags": [],
+                "text": ""
+            },
+            "complexType": {
+                "original": "any",
+                "resolved": "any",
+                "references": {}
+            }
+        }]; }
+    static get watchers() { return [{
+            "propName": "header",
+            "methodName": "watchHeader"
+        }]; }
 }

@@ -73,5 +73,5 @@
 }
 
 .tab[role=tabpanel] {
-  padding: var(--spacing-medium);
+  padding: var(--tab-padding);
 }

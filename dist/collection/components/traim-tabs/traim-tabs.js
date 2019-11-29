@@ -3,6 +3,9 @@ export class TraimTabs {
     componentWillLoad() {
         this.tabs = Array.from(this.elem.querySelectorAll('traim-tab'));
     }
+    changeTabHandler() {
+        this.tabs = Array.from(this.elem.querySelectorAll('traim-tab'));
+    }
     async currentTab() {
         return this.tabs.findIndex((tab) => tab.open);
     }
@@ -19,10 +22,11 @@ export class TraimTabs {
     render() {
         return (h("div", { class: "tabs" },
             h("div", { role: "tablist", class: "tabs__tablist" },
-                h("div", { class: "tabs__nav" },
-                    h("div", { class: "tabs__headings" }, this.tabs.map((tab, i) => {
+                h("nav", { class: "tabs__nav" },
+                    h("ul", { class: "tabs__headings" }, this.tabs.map((tab, i) => {
                         const openClass = tab.open ? 'is-active' : '';
-                        return (h("button", { role: "tab", disabled: tab.disabled, class: `tabs__heading ${openClass}`, onClick: () => this.openTab(i) }, tab.header));
+                        return (h("li", { class: "tabs__tab" },
+                            h("button", { role: "tab", disabled: tab.disabled, class: `tabs__heading ${openClass}`, onClick: () => this.openTab(i) }, tab.header)));
                     }))),
                 h("slot", null))));
     }
@@ -91,4 +95,11 @@ export class TraimTabs {
         }
     }; }
     static get elementRef() { return "elem"; }
+    static get listeners() { return [{
+            "name": "changeTabHeader",
+            "method": "changeTabHandler",
+            "target": undefined,
+            "capture": false,
+            "passive": false
+        }]; }
 }

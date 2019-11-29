@@ -14,6 +14,13 @@
 | `open`     | `open`     |             | `boolean` | `undefined` |
 
 
+## Events
+
+| Event             | Description | Type               |
+| ----------------- | ----------- | ------------------ |
+| `changeTabHeader` |             | `CustomEvent<any>` |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

@@ -1,4 +1,4 @@
-import { Component, h, Element, Event, State, EventEmitter, Method } from '@stencil/core';
+import { Component, h, Element, Event, State, EventEmitter, Method, Listen } from '@stencil/core';
 
 @Component({
   tag: 'traim-tabs',
@@ -16,6 +16,11 @@ export class TraimTabs {
   onChange: EventEmitter;
 
   componentWillLoad() {
+    this.tabs = Array.from(this.elem.querySelectorAll('traim-tab'));
+  }
+
+  @Listen('changeTabHeader')
+  changeTabHandler() {
     this.tabs = Array.from(this.elem.querySelectorAll('traim-tab'));
   }
 
@@ -40,23 +45,25 @@ export class TraimTabs {
     return (
       <div class="tabs">
         <div role="tablist" class="tabs__tablist">
-          <div class="tabs__nav">
-            <div class="tabs__headings">
+          <nav class="tabs__nav">
+            <ul class="tabs__headings">
               {this.tabs.map((tab, i: number) => {
                 const openClass = tab.open ? 'is-active' : '';
 
                 return (
-                  <button
-                    role="tab"
-                    disabled={tab.disabled}
-                    class={`tabs__heading ${openClass}`}
-                    onClick={() => this.openTab(i)}>
-                    {tab.header}
-                  </button>
+                  <li class="tabs__tab">
+                    <button
+                      role="tab"
+                      disabled={tab.disabled}
+                      class={`tabs__heading ${openClass}`}
+                      onClick={() => this.openTab(i)}>
+                      {tab.header}
+                    </button>
+                  </li>
                 );
               })}
-            </div>
-          </div>
+            </ul>
+          </nav>
           <slot />
         </div>
       </div>

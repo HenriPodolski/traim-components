@@ -25,23 +25,6 @@
   border-radius: 0;
   outline: 0;
   appearance: none;
-
-  &:not(:disabled):not([disabled]) {
-    &:active {
-      background-color: transparent;
-    }
-
-    &:not(:active) {
-      &:focus {
-        border-color: var(--border-color-focus);
-        box-shadow: var(--box-shadow-focus);
-      }
-
-      &:hover {
-        background-color: transparent;
-      }
-    }
-  }
 }
 
 .tabs {
@@ -52,39 +35,76 @@
   &__headings {
     display: flex;
     text-align: center;
+    list-style: none outside;
+    margin: 0;
+    padding: 0;
   }
 
   &__nav {
     overflow: hidden;
 
     .tabs__headings {
-      margin-bottom: -1em;
-      padding-bottom: 1em;
       overflow-x: auto;
       overflow-y: hidden;
     }
   }
 
+  &__tab {
+
+  }
+
   &__heading[role='tab'] {
-    --tab-heading-border-color: var(--color-default);
-
+    position: relative;
     @include button-nude;
-
+    padding: var(--tab-padding-top, 0) var(--tab-padding-left, 0) var(--tab-padding-bottom, 0) var(--tab-padding-right, 0);
     display: block;
     flex: 1;
-    margin: 0;
-    padding: var(--spacing-medium);
-    white-space: nowrap;
-    border-bottom: var(--spacing-xsmall) solid var(--color-background);
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    margin: 0 var(--tab-margin-left) 0 var(--tab-margin-right);
 
-    &:not(:disabled):not(.is-active):hover {
-      border-bottom-color: var(--tab-heading-border-color);
+    &:first-of-type {
+      margin: 0 0 0 var(--tab-margin-right);
     }
 
+    &:last-of-type {
+      margin: 0 var(--tab-margin-left) 0 0;
+    }
+
+    cursor: pointer;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: var(--tab-font-family, inherit);
+    font-size: var(--tab-font-size, var(--text-font-size-medium));
+    color: var(--tab-color);
+    transition: color 0.3s;
+
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      background-color: var(--tab-background-color);
+      content: '';
+      transition: background-color 0.3s, transform 0.3s;
+      transition-timing-function: ease, cubic-bezier(0.7,0,0.3,1);
+      transform: translate3d(0,100%,0) translate3d(0,-3px,0);
+    }
+
+    &:not(:disabled):not(.is-active):hover {
+      color: var(--tab-hover-color);
+      &::after {
+        background-color: var(--tab-active-background-color);
+      }
+   }
+
     &.is-active {
-      background-color: var(--color-background);
-      border-bottom-color: var(--tab-heading-border-color);
+      color: var(--tab-active-color);
+
+      &::after {
+        transform: translate3d(0,0,0);
+        background-color: var(--tab-active-background-color);
+      }
     }
   }
 }
