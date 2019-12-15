@@ -9,6 +9,7 @@
 
 | Property | Attribute | Description | Type      | Default     |
 | -------- | --------- | ----------- | --------- | ----------- |
+| `empty`  | `empty`   |             | `boolean` | `false`     |
 | `header` | `header`  |             | `string`  | `undefined` |
 | `open`   | `open`    |             | `boolean` | `false`     |
 

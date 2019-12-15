@@ -12,8 +12,10 @@ export class TraimAccordionPane {
   open: boolean = false;
 
   @Prop()
-  header: string;
+  empty: boolean = false;
 
+  @Prop()
+  header: string;
 
   @Event({ eventName: 'togglepane' })
   onToggle: EventEmitter;
@@ -44,13 +46,15 @@ export class TraimAccordionPane {
 
   render() {
     const isOpenClass = this._isOpen ? 'is-active' : '';
+    const isEmptyClass = this.empty ? 'is-empty': '';
 
     return [
       <button
         role="heading"
         aria-expanded={this._isOpen.toString()}
-        class={`control ${isOpenClass}`}
-        onClick={() => this.toggle()}
+        tabindex={!this.empty ? 0 : -1}
+        class={`control ${isOpenClass} ${isEmptyClass}`}
+        onClick={() => !this.empty && this.toggle()}
         innerHTML={this.header}>
       </button>,
       <section

@@ -3,6 +3,7 @@ export class TraimAccordionPane {
     constructor() {
         this._isOpen = false;
         this.open = false;
+        this.empty = false;
     }
     componentWillLoad() {
         this._isOpen = this.open;
@@ -22,8 +23,9 @@ export class TraimAccordionPane {
     }
     render() {
         const isOpenClass = this._isOpen ? 'is-active' : '';
+        const isEmptyClass = this.empty ? 'is-empty' : '';
         return [
-            h("button", { role: "heading", "aria-expanded": this._isOpen.toString(), class: `control ${isOpenClass}`, onClick: () => this.toggle(), innerHTML: this.header }),
+            h("button", { role: "heading", "aria-expanded": this._isOpen.toString(), tabindex: !this.empty ? 0 : -1, class: `control ${isOpenClass} ${isEmptyClass}`, onClick: () => !this.empty && this.toggle(), innerHTML: this.header }),
             h("section", { "aria-hidden": !this._isOpen, class: `pane` },
                 h("slot", null)),
         ];
@@ -51,6 +53,24 @@ export class TraimAccordionPane {
                 "text": ""
             },
             "attribute": "open",
+            "reflect": false,
+            "defaultValue": "false"
+        },
+        "empty": {
+            "type": "boolean",
+            "mutable": false,
+            "complexType": {
+                "original": "boolean",
+                "resolved": "boolean",
+                "references": {}
+            },
+            "required": false,
+            "optional": false,
+            "docs": {
+                "tags": [],
+                "text": ""
+            },
+            "attribute": "empty",
             "reflect": false,
             "defaultValue": "false"
         },

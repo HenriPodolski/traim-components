@@ -119,6 +119,12 @@
     transform: rotate(180deg);
   }
 
+  &.is-empty {
+    &::after {
+      content: none;
+    }
+  }
+
   &.is-active {
     opacity: 0.8;
   }

@@ -17,6 +17,7 @@ export namespace Components {
   }
   interface TraimAccordionPane {
     'close': () => Promise<void>;
+    'empty': boolean;
     'header': string;
     'isOpen': () => Promise<boolean>;
     'open': boolean;
@@ -109,6 +110,7 @@ declare namespace LocalJSX {
     'useCounter'?: boolean;
   }
   interface TraimAccordionPane {
+    'empty'?: boolean;
     'header'?: string;
     'onTogglepane'?: (event: CustomEvent<any>) => void;
     'open'?: boolean;
