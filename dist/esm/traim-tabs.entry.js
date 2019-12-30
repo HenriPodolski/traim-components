@@ -1,4 +1,4 @@
-import { r as registerInstance, c as createEvent, h, g as getElement } from './core-849a1660.js';
+import { r as registerInstance, c as createEvent, h, g as getElement } from './core-04a1e93f.js';
 
 const TraimTabs = class {
     constructor(hostRef) {

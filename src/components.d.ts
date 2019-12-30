@@ -10,6 +10,10 @@ import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 import {
   IAutoCompleteItem,
 } from './components/traim-autocomplete/interfaces';
+import {
+  TooltipAppearanceEnum,
+  TooltipOrientationsEnum,
+} from './components/traim-tooltip/traim-tooltip.enum';
 
 export namespace Components {
   interface TraimAccordion {
@@ -46,6 +50,13 @@ export namespace Components {
     'left': boolean;
     'loading': boolean;
     'type': string;
+  }
+  interface TraimTooltip {
+    'appearance': TooltipAppearanceEnum;
+    'content': string;
+    'isVisible': boolean;
+    'orientation': TooltipOrientationsEnum;
+    'visibleOnHover': boolean;
   }
 }
 
@@ -93,6 +104,12 @@ declare global {
     prototype: HTMLTraimTimelineItemElement;
     new (): HTMLTraimTimelineItemElement;
   };
+
+  interface HTMLTraimTooltipElement extends Components.TraimTooltip, HTMLStencilElement {}
+  var HTMLTraimTooltipElement: {
+    prototype: HTMLTraimTooltipElement;
+    new (): HTMLTraimTooltipElement;
+  };
   interface HTMLElementTagNameMap {
     'traim-accordion': HTMLTraimAccordionElement;
     'traim-accordion-pane': HTMLTraimAccordionPaneElement;
@@ -101,6 +118,7 @@ declare global {
     'traim-tabs': HTMLTraimTabsElement;
     'traim-timeline': HTMLTraimTimelineElement;
     'traim-timeline-item': HTMLTraimTimelineItemElement;
+    'traim-tooltip': HTMLTraimTooltipElement;
   }
 }
 
@@ -140,6 +158,13 @@ declare namespace LocalJSX {
     'loading'?: boolean;
     'type'?: string;
   }
+  interface TraimTooltip {
+    'appearance'?: TooltipAppearanceEnum;
+    'content'?: string;
+    'isVisible'?: boolean;
+    'orientation'?: TooltipOrientationsEnum;
+    'visibleOnHover'?: boolean;
+  }
 
   interface IntrinsicElements {
     'traim-accordion': TraimAccordion;
@@ -149,6 +174,7 @@ declare namespace LocalJSX {
     'traim-tabs': TraimTabs;
     'traim-timeline': TraimTimeline;
     'traim-timeline-item': TraimTimelineItem;
+    'traim-tooltip': TraimTooltip;
   }
 }
 
@@ -165,6 +191,7 @@ declare module "@stencil/core" {
       'traim-tabs': LocalJSX.TraimTabs & JSXBase.HTMLAttributes<HTMLTraimTabsElement>;
       'traim-timeline': LocalJSX.TraimTimeline & JSXBase.HTMLAttributes<HTMLTraimTimelineElement>;
       'traim-timeline-item': LocalJSX.TraimTimelineItem & JSXBase.HTMLAttributes<HTMLTraimTimelineItemElement>;
+      'traim-tooltip': LocalJSX.TraimTooltip & JSXBase.HTMLAttributes<HTMLTraimTooltipElement>;
     }
   }
 }
