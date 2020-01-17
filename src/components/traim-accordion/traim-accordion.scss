@@ -2,25 +2,28 @@
 
 .accordion {
   display: block;
-  width: 100%;
+  width: var(--accordion-width, 100%);
   padding: 0;
   overflow: hidden;
   background-color: var(--color-background);
   border-radius: var(--border-radius);
-  counter-reset: accordion;
 
-  .control[aria-expanded] {
-    &::before {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: var(--accordion-counter-margin-right, 6px);
-      counter-increment: accordion;
-      content: counter(accordion);
-      width: var(--accordion-counter-size, 20px);
-      height: var(--accordion-counter-size, 20px);
-      background-color: var(--accordion-counter-background-color, white);
-      border-radius: 50%;
+  &.has-counter {
+    counter-reset: accordion;
+
+    .control[aria-expanded] {
+      &::before {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: var(--accordion-counter-margin-right, 6px);
+        width: var(--accordion-counter-size, 20px);
+        height: var(--accordion-counter-size, 20px);
+        background-color: var(--accordion-counter-background-color, white);
+        border-radius: 50%;
+        counter-increment: accordion;
+        content: counter(accordion);
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import { r as registerInstance, c as createEvent, h } from './core-04a1e93f.js';
+import { r as registerInstance, c as createEvent, h } from './core-2d640435.js';
 
 const TraimAutocomplete = class {
     constructor(hostRef) {

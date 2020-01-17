@@ -1,4 +1,4 @@
-import { r as registerInstance, h, H as Host } from './core-04a1e93f.js';
+import { r as registerInstance, h, H as Host } from './core-2d640435.js';
 
 var TooltipAppearanceEnum;
 (function (TooltipAppearanceEnum) {

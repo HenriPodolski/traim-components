@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const core = require('./core-f6c81012.js');
+const core = require('./core-399a9e2c.js');
 
 const TraimTab = class {
     constructor(hostRef) {
