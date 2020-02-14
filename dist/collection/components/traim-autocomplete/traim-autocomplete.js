@@ -4,6 +4,17 @@ export class TraimAutocomplete {
         this.items = [];
         this.handleOuterClick = this.handleOuterClick.bind(this);
     }
+    itemsChangedHandler(newValue) {
+        if (!newValue.length) {
+            if (this.emptyMessage) {
+                this.empty();
+            }
+            else {
+                this.close();
+            }
+        }
+        this.setItems(newValue);
+    }
     async setItems(items) {
         this.items = items;
         this.value ? this.open() : this.close();
@@ -23,7 +34,7 @@ export class TraimAutocomplete {
     select(item) {
         this.activeItem = item;
         this.selectedItem = item;
-        this.value = item.key;
+        this.value = item.value.title;
         this.onSelect.emit(item);
         this.close();
     }
@@ -32,6 +43,14 @@ export class TraimAutocomplete {
         this.value = e.target.value;
         const query = this.value;
         this.onSearch.emit(query);
+        if (this.value) {
+            const found = this.items.find((item) => {
+                return item.value.title.toLowerCase() === this.value.toLowerCase();
+            });
+            if (found) {
+                this.select(found);
+            }
+        }
     }
     open() {
         if (this.items.length) {
@@ -41,6 +60,9 @@ export class TraimAutocomplete {
     close() {
         this._isOpen = false;
     }
+    empty() {
+        console.log('Empty message');
+    }
     handleOuterClick(evt) {
         const eventElement = evt.target;
         if (eventElement.matches(`[for="${this.uid}"]`)) {
@@ -49,7 +71,7 @@ export class TraimAutocomplete {
                 focusEl.focus();
             }
         }
-        else if (eventElement !== this.el || !this.el.contains(eventElement)) {
+        else if (!this.el.contains(eventElement)) {
             this.close();
         }
     }
@@ -154,12 +176,9 @@ export class TraimAutocomplete {
             "type": "unknown",
             "mutable": true,
             "complexType": {
-                "original": "Array<IAutoCompleteItem>",
+                "original": "IAutoCompleteItem[]",
                 "resolved": "IAutoCompleteItem[]",
                 "references": {
-                    "Array": {
-                        "location": "global"
-                    },
                     "IAutoCompleteItem": {
                         "location": "import",
                         "path": "./interfaces"
@@ -173,6 +192,23 @@ export class TraimAutocomplete {
                 "text": ""
             },
             "defaultValue": "[]"
+        },
+        "emptyMessage": {
+            "type": "string",
+            "mutable": false,
+            "complexType": {
+                "original": "string",
+                "resolved": "string",
+                "references": {}
+            },
+            "required": false,
+            "optional": false,
+            "docs": {
+                "tags": [],
+                "text": ""
+            },
+            "attribute": "empty-message",
+            "reflect": false
         }
     }; }
     static get states() { return {
@@ -183,7 +219,7 @@ export class TraimAutocomplete {
     }; }
     static get events() { return [{
             "method": "onSelect",
-            "name": "selectAutocompleteItem",
+            "name": "selectAutocomplete",
             "bubbles": true,
             "cancelable": true,
             "composed": true,
@@ -198,7 +234,7 @@ export class TraimAutocomplete {
             }
         }, {
             "method": "onSearch",
-            "name": "searchAutocompleteItem",
+            "name": "searchAutocomplete",
             "bubbles": true,
             "cancelable": true,
             "composed": true,
@@ -241,6 +277,10 @@ export class TraimAutocomplete {
         }
     }; }
     static get elementRef() { return "el"; }
+    static get watchers() { return [{
+            "propName": "items",
+            "methodName": "itemsChangedHandler"
+        }]; }
     static get listeners() { return [{
             "name": "click",
             "method": "handleOuterClick",

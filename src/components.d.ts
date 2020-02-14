@@ -28,7 +28,8 @@ export namespace Components {
     'show': () => Promise<void>;
   }
   interface TraimAutocomplete {
-    'items': Array<IAutoCompleteItem>;
+    'emptyMessage': string;
+    'items': IAutoCompleteItem[];
     'itemsJSON': string;
     'placeholder': string;
     'setItems': (items: IAutoCompleteItem[]) => Promise<void>;
@@ -136,10 +137,11 @@ declare namespace LocalJSX {
     'open'?: boolean;
   }
   interface TraimAutocomplete {
-    'items'?: Array<IAutoCompleteItem>;
+    'emptyMessage'?: string;
+    'items'?: IAutoCompleteItem[];
     'itemsJSON'?: string;
-    'onSearchAutocompleteItem'?: (event: CustomEvent<any>) => void;
-    'onSelectAutocompleteItem'?: (event: CustomEvent<any>) => void;
+    'onSearchAutocomplete'?: (event: CustomEvent<any>) => void;
+    'onSelectAutocomplete'?: (event: CustomEvent<any>) => void;
     'placeholder'?: string;
     'uid'?: string;
   }

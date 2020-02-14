@@ -1,4 +1,4 @@
-import { Component, Event, Element, EventEmitter, h, Listen, Method, Prop, State } from '@stencil/core';
+import { Component, Event, Element, EventEmitter, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { IAutoCompleteItem } from './interfaces';
 
 @Component({
@@ -20,12 +20,27 @@ export class TraimAutocomplete {
   itemsJSON: string;
 
   @Prop({ mutable: true })
-  items: Array<IAutoCompleteItem> = [];
+  items: IAutoCompleteItem[] = [];
 
-  @Event({ eventName: 'selectAutocompleteItem' })
+  @Prop()
+  emptyMessage: string;
+
+  @Watch('items')
+  itemsChangedHandler(newValue: IAutoCompleteItem[]) {
+    if (!newValue.length) {
+      if (this.emptyMessage) {
+        this.empty();
+      } else {
+        this.close();
+      }
+    }
+    this.setItems(newValue);
+  }
+
+  @Event({ eventName: 'selectAutocomplete' })
   onSelect: EventEmitter;
 
-  @Event({ eventName: 'searchAutocompleteItem' })
+  @Event({ eventName: 'searchAutocomplete' })
   onSearch: EventEmitter;
 
   @State()
@@ -67,7 +82,7 @@ export class TraimAutocomplete {
   select(item: IAutoCompleteItem) {
     this.activeItem = item;
     this.selectedItem = item;
-    this.value = item.key;
+    this.value = item.value.title;
     this.onSelect.emit(item);
     this.close();
   }
@@ -77,6 +92,16 @@ export class TraimAutocomplete {
     this.value = e.target.value;
     const query = this.value;
     this.onSearch.emit(query);
+
+    if (this.value) {
+      const found = this.items.find((item) => {
+        return item.value.title.toLowerCase() === this.value.toLowerCase();
+      });
+
+      if (found) {
+        this.select(found);
+      }
+    }
   }
 
   open() {
@@ -89,6 +114,10 @@ export class TraimAutocomplete {
     this._isOpen = false;
   }
 
+  empty() {
+    console.log('Empty message');
+  }
+
   @Listen('click', {target: 'window'})
   handleOuterClick(evt: Event) {
     const eventElement: HTMLElement = evt.target as HTMLElement;
@@ -98,7 +127,7 @@ export class TraimAutocomplete {
       if (focusEl) {
         focusEl.focus();
       }
-    } else if (eventElement !== this.el || !this.el.contains(eventElement)) {
+    } else if (!this.el.contains(eventElement)) {
       this.close();
     }
   }

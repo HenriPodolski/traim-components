@@ -7,20 +7,21 @@
 
 ## Properties
 
-| Property      | Attribute     | Description | Type                  | Default     |
-| ------------- | ------------- | ----------- | --------------------- | ----------- |
-| `items`       | --            |             | `IAutoCompleteItem[]` | `[]`        |
-| `itemsJSON`   | `items-json`  |             | `string`              | `undefined` |
-| `placeholder` | `placeholder` |             | `string`              | `undefined` |
-| `uid`         | `uid`         |             | `string`              | `undefined` |
+| Property       | Attribute       | Description | Type                  | Default     |
+| -------------- | --------------- | ----------- | --------------------- | ----------- |
+| `emptyMessage` | `empty-message` |             | `string`              | `undefined` |
+| `items`        | --              |             | `IAutoCompleteItem[]` | `[]`        |
+| `itemsJSON`    | `items-json`    |             | `string`              | `undefined` |
+| `placeholder`  | `placeholder`   |             | `string`              | `undefined` |
+| `uid`          | `uid`           |             | `string`              | `undefined` |
 
 
 ## Events
 
-| Event                    | Description | Type               |
-| ------------------------ | ----------- | ------------------ |
-| `searchAutocompleteItem` |             | `CustomEvent<any>` |
-| `selectAutocompleteItem` |             | `CustomEvent<any>` |
+| Event                | Description | Type               |
+| -------------------- | ----------- | ------------------ |
+| `searchAutocomplete` |             | `CustomEvent<any>` |
+| `selectAutocomplete` |             | `CustomEvent<any>` |
 
 
 ## Methods

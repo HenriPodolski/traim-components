@@ -61,8 +61,19 @@ const TraimAutocomplete = class {
         registerInstance(this, hostRef);
         this.items = [];
         this.handleOuterClick = this.handleOuterClick.bind(this);
-        this.onSelect = createEvent(this, "selectAutocompleteItem", 7);
-        this.onSearch = createEvent(this, "searchAutocompleteItem", 7);
+        this.onSelect = createEvent(this, "selectAutocomplete", 7);
+        this.onSearch = createEvent(this, "searchAutocomplete", 7);
+    }
+    itemsChangedHandler(newValue) {
+        if (!newValue.length) {
+            if (this.emptyMessage) {
+                this.empty();
+            }
+            else {
+                this.close();
+            }
+        }
+        this.setItems(newValue);
     }
     async setItems(items) {
         this.items = items;
@@ -83,7 +94,7 @@ const TraimAutocomplete = class {
     select(item) {
         this.activeItem = item;
         this.selectedItem = item;
-        this.value = item.key;
+        this.value = item.value.title;
         this.onSelect.emit(item);
         this.close();
     }
@@ -92,6 +103,14 @@ const TraimAutocomplete = class {
         this.value = e.target.value;
         const query = this.value;
         this.onSearch.emit(query);
+        if (this.value) {
+            const found = this.items.find((item) => {
+                return item.value.title.toLowerCase() === this.value.toLowerCase();
+            });
+            if (found) {
+                this.select(found);
+            }
+        }
     }
     open() {
         if (this.items.length) {
@@ -101,6 +120,9 @@ const TraimAutocomplete = class {
     close() {
         this._isOpen = false;
     }
+    empty() {
+        console.log('Empty message');
+    }
     handleOuterClick(evt) {
         const eventElement = evt.target;
         if (eventElement.matches(`[for="${this.uid}"]`)) {
@@ -109,7 +131,7 @@ const TraimAutocomplete = class {
                 focusEl.focus();
             }
         }
-        else if (eventElement !== this.el || !this.el.contains(eventElement)) {
+        else if (!this.el.contains(eventElement)) {
             this.close();
         }
     }
@@ -149,7 +171,10 @@ const TraimAutocomplete = class {
         })))));
     }
     get el() { return getElement(this); }
-    static get style() { return ":host{display:block;-webkit-box-sizing:border-box;box-sizing:border-box}.autocomplete{position:relative;display:-ms-inline-flexbox;display:inline-flex}.autocomplete__input{min-width:var(--autocomplete-input-min-width,150px);width:var(--autocomplete-input-width,auto);max-width:var(--autocomplete-input-max-width,300px);text-transform:none;padding:var(--autocomplete-input-padding-horizontal,3px) var(--autocomplete-item-padding-vertical,6px)}.autocomplete__input::-webkit-input-placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__input::-moz-placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__input:-ms-input-placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__input::-ms-input-placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__input::placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__list{position:absolute;width:100%;top:100%;left:0;list-style:none outside;padding-left:0;margin:0;background-color:#fff;z-index:1;border-left:1px solid var(--autocomplete-border,#d3d3d3);border-right:1px solid var(--autocomplete-border,#d3d3d3);border-bottom:1px solid var(--autocomplete-border,#d3d3d3)}.autocomplete__list-item{-webkit-appearance:none;padding:var(--autocomplete-item-padding-horizontal,6px) var(--autocomplete-item-padding-vertical,12px);cursor:pointer;font-family:var(--autocomplete-item-font-family,inherit);font-size:var(--autocomplete-item-font-size,inherit);font-weight:var(--autocomplete-item-font-weight,normal);text-align:var(--autocomplete-item-text-align,left);border:none;display:block;background-color:var(--autocomplete-item-background-color,#fff);width:100%}.autocomplete__list-item:focus,.autocomplete__list-item:hover{background-color:var(--autocomplete-user-action-item-background-color,rgba(0,149,198,.3))}.autocomplete__list-item:focus{outline:2px solid var(--autocomplete-user-action-item-outline-color,rgba(0,149,198,.8));outline-offset:-2px}.autocomplete__list-item.is-active{background-color:var(--autocomplete-active-item-background-color,rgba(0,149,198,.3))}"; }
+    static get watchers() { return {
+        "items": ["itemsChangedHandler"]
+    }; }
+    static get style() { return ":host{-webkit-box-sizing:border-box;box-sizing:border-box}.autocomplete,:host{display:-ms-inline-flexbox;display:inline-flex}.autocomplete{position:relative}.autocomplete__input{min-width:var(--autocomplete-input-min-width,150px);width:var(--autocomplete-input-width,auto);max-width:var(--autocomplete-input-max-width,300px);text-transform:none;padding:var(--autocomplete-input-padding-horizontal,3px) var(--autocomplete-item-padding-vertical,6px)}.autocomplete__input::-webkit-input-placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__input::-moz-placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__input:-ms-input-placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__input::-ms-input-placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__input::placeholder{color:var(--autocomplete-placeholder-color,grey)}.autocomplete__list{position:absolute;width:100%;top:100%;left:-1px;list-style:none outside;padding-left:0;margin:0;background-color:#fff;z-index:1;border-left:1px solid var(--autocomplete-border,#d3d3d3);border-right:1px solid var(--autocomplete-border,#d3d3d3);border-bottom:1px solid var(--autocomplete-border,#d3d3d3)}.autocomplete__list-item{-webkit-appearance:none;padding:var(--autocomplete-item-padding-horizontal,6px) var(--autocomplete-item-padding-vertical,12px);cursor:pointer;font-family:var(--autocomplete-item-font-family,inherit);font-size:var(--autocomplete-item-font-size,inherit);font-weight:var(--autocomplete-item-font-weight,normal);text-align:var(--autocomplete-item-text-align,left);border:none;display:block;background-color:var(--autocomplete-item-background-color,#fff);width:100%}.autocomplete__list-item:focus,.autocomplete__list-item:hover{background-color:var(--autocomplete-user-action-item-background-color,rgba(0,149,198,.3))}.autocomplete__list-item:focus{outline:2px solid var(--autocomplete-user-action-item-outline-color,rgba(0,149,198,.8));outline-offset:-2px}.autocomplete__list-item.is-active{background-color:var(--autocomplete-active-item-background-color,rgba(0,149,198,.3))}"; }
 };
 
 export { TraimAccordion as traim_accordion, TraimAccordionPane as traim_accordion_pane, TraimAutocomplete as traim_autocomplete };
