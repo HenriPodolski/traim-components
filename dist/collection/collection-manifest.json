@@ -1,7 +1,7 @@
 {
   "entries": [
-    "components\\traim-accordion-pane\\traim-accordion-pane.js",
     "components\\traim-accordion\\traim-accordion.js",
+    "components\\traim-accordion-pane\\traim-accordion-pane.js",
     "components\\traim-autocomplete\\traim-autocomplete.js",
     "components\\traim-tab\\traim-tab.js",
     "components\\traim-tabs\\traim-tabs.js",
