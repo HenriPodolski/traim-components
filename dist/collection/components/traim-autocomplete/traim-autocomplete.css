@@ -1,18 +1,56 @@
 :host {
   display: block;
+  box-sizing: border-box;
 }
 
-.autocomplete .c-field {
-  border-radius: 0;
+.autocomplete {
+  position: relative;
+  display: inline-flex;
 }
-.autocomplete:not(:first-child) .c-field {
-  border-left-width: 0;
+.autocomplete__input {
+  min-width: var(--autocomplete-input-min-width, 150px);
+  width: var(--autocomplete-input-width, auto);
+  max-width: var(--autocomplete-input-max-width, 300px);
+  text-transform: none;
+  padding: var(--autocomplete-input-padding-horizontal, 3px) var(--autocomplete-item-padding-vertical, 6px);
 }
-.autocomplete:first-child .c-field {
-  border-top-left-radius: var(--border-radius);
-  border-bottom-left-radius: var(--border-radius);
+.autocomplete__input::placeholder {
+  color: var(--autocomplete-placeholder-color, grey);
 }
-.autocomplete:last-child .c-field {
-  border-top-right-radius: var(--border-radius);
-  border-bottom-right-radius: var(--border-radius);
+.autocomplete__list {
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  list-style: none outside;
+  padding-left: 0;
+  margin: 0;
+  background-color: white;
+  z-index: 1;
+  border-left: 1px solid var(--autocomplete-border, lightgray);
+  border-right: 1px solid var(--autocomplete-border, lightgray);
+  border-bottom: 1px solid var(--autocomplete-border, lightgray);
+}
+.autocomplete__list-item {
+  -webkit-appearance: none;
+  padding: var(--autocomplete-item-padding-horizontal, 6px) var(--autocomplete-item-padding-vertical, 12px);
+  cursor: pointer;
+  font-family: var(--autocomplete-item-font-family, inherit);
+  font-size: var(--autocomplete-item-font-size, inherit);
+  font-weight: var(--autocomplete-item-font-weight, normal);
+  text-align: var(--autocomplete-item-text-align, left);
+  border: none;
+  display: block;
+  background-color: var(--autocomplete-item-background-color, white);
+  width: 100%;
+}
+.autocomplete__list-item:hover, .autocomplete__list-item:focus {
+  background-color: var(--autocomplete-user-action-item-background-color, rgba(0, 149, 198, 0.3));
+}
+.autocomplete__list-item:focus {
+  outline: 2px solid var(--autocomplete-user-action-item-outline-color, rgba(0, 149, 198, 0.8));
+  outline-offset: -2px;
+}
+.autocomplete__list-item.is-active {
+  background-color: var(--autocomplete-active-item-background-color, rgba(0, 149, 198, 0.3));
 }

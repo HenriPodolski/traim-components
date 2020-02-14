@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const core = require('./core-399a9e2c.js');
+const core = require('./core-3c42334c.js');
 
 const TraimTimeline = class {
     constructor(hostRef) {

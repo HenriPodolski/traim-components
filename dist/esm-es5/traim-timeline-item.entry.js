@@ -1,4 +1,4 @@
-import { r as registerInstance, h } from './core-2d640435.js';
+import { r as registerInstance, h } from './core-5e402d93.js';
 var TraimTimelineItem = /** @class */ (function () {
     function TraimTimelineItem(hostRef) {
         registerInstance(this, hostRef);

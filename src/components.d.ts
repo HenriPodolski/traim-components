@@ -29,8 +29,10 @@ export namespace Components {
   }
   interface TraimAutocomplete {
     'items': Array<IAutoCompleteItem>;
+    'itemsJSON': string;
     'placeholder': string;
     'setItems': (items: IAutoCompleteItem[]) => Promise<void>;
+    'uid': string;
   }
   interface TraimTab {
     'disabled': boolean;
@@ -135,9 +137,11 @@ declare namespace LocalJSX {
   }
   interface TraimAutocomplete {
     'items'?: Array<IAutoCompleteItem>;
+    'itemsJSON'?: string;
     'onSearchAutocompleteItem'?: (event: CustomEvent<any>) => void;
     'onSelectAutocompleteItem'?: (event: CustomEvent<any>) => void;
     'placeholder'?: string;
+    'uid'?: string;
   }
   interface TraimTab {
     'disabled'?: boolean;

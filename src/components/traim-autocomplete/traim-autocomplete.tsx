@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, h, Listen, Method, Prop, State } from '@stencil/core';
+import { Component, Event, Element, EventEmitter, h, Listen, Method, Prop, State } from '@stencil/core';
 import { IAutoCompleteItem } from './interfaces';
 
 @Component({
@@ -9,6 +9,15 @@ import { IAutoCompleteItem } from './interfaces';
 export class TraimAutocomplete {
   @Prop()
   placeholder: string;
+
+  @Prop()
+  uid: string;
+
+  @Prop({
+    attribute: 'items-json',
+    mutable: true
+  })
+  itemsJSON: string;
 
   @Prop({ mutable: true })
   items: Array<IAutoCompleteItem> = [];
@@ -31,10 +40,28 @@ export class TraimAutocomplete {
   @State()
   value: string;
 
+  @Element() private el: HTMLElement;
+
   @Method()
   async setItems(items: Array<IAutoCompleteItem>) {
     this.items = items;
     this.value ? this.open() : this.close();
+  }
+
+  constructor() {
+    this.handleOuterClick = this.handleOuterClick.bind(this);
+  }
+
+  connectedCallback() {
+    if (this.itemsJSON && !this.items.length) {
+      try {
+        const items = JSON.parse(this.itemsJSON);
+        this.setItems(items);
+        this.itemsJSON = '';
+      } catch (e) {
+        console.warn('Could not parse data in item-json for <traim-autocomplete>', e);
+      }
+    }
   }
 
   select(item: IAutoCompleteItem) {
@@ -62,13 +89,27 @@ export class TraimAutocomplete {
     this._isOpen = false;
   }
 
+  @Listen('click', {target: 'window'})
+  handleOuterClick(evt: Event) {
+    const eventElement: HTMLElement = evt.target as HTMLElement;
+    if (eventElement.matches(`[for="${this.uid}"]`)) {
+      const focusEl: HTMLElement = this.el.shadowRoot.getElementById(this.uid);
+
+      if (focusEl) {
+        focusEl.focus();
+      }
+    } else if (eventElement !== this.el || !this.el.contains(eventElement)) {
+      this.close();
+    }
+  }
+
   @Listen('keydown')
-  handleKeyDown(ev: KeyboardEvent) {
+  handleKeyDown(evt: KeyboardEvent) {
     let idx = this.items.indexOf(this.activeItem);
 
-    switch (ev.key) {
+    switch (evt.key) {
       case 'ArrowDown': {
-        ev.preventDefault();
+        evt.preventDefault();
         this.open();
         if (idx < this.items.length - 1) {
           this.activeItem = this.items[idx + 1];
@@ -76,7 +117,7 @@ export class TraimAutocomplete {
         break;
       }
       case 'ArrowUp': {
-        ev.preventDefault();
+        evt.preventDefault();
         if (idx > 0) {
           this.activeItem = this.items[idx - 1];
         }
@@ -84,7 +125,7 @@ export class TraimAutocomplete {
       }
       case 'Enter': {
         if (this.activeItem) {
-          ev.preventDefault();
+          evt.preventDefault();
           this.select(this.activeItem);
         }
       }
@@ -98,8 +139,10 @@ export class TraimAutocomplete {
     return (
       <div class="autocomplete">
         <input
+          id={this.uid}
+          name={this.uid}
           type="search"
-          class="c-field"
+          class="autocomplete__input"
           placeholder={this.placeholder}
           autocomplete="off"
           value={this.value}
@@ -108,12 +151,12 @@ export class TraimAutocomplete {
           onClick={() => this.open()}
         />
         {this._isOpen && (
-          <div role="menu" class="c-card c-card--menu">
+          <div role="menu" class="autocomplete__list">
             {this.items.map((item) => {
-              const isActiveClass = this.activeItem === item ? 'c-card__control--active' : '';
+              const isActiveClass = this.activeItem === item ? 'is-active' : '';
               return (
-                <button role="menuitem" class={`c-card__control ${isActiveClass}`} onClick={() => this.select(item)}>
-                  {item.value}
+                <button role="menuitem" class={`autocomplete__list-item ${isActiveClass}`} onClick={() => this.select(item)}>
+                  {item.value.title}
                 </button>
               );
             })}

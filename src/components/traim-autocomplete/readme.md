@@ -10,7 +10,9 @@
 | Property      | Attribute     | Description | Type                  | Default     |
 | ------------- | ------------- | ----------- | --------------------- | ----------- |
 | `items`       | --            |             | `IAutoCompleteItem[]` | `[]`        |
+| `itemsJSON`   | `items-json`  |             | `string`              | `undefined` |
 | `placeholder` | `placeholder` |             | `string`              | `undefined` |
+| `uid`         | `uid`         |             | `string`              | `undefined` |
 
 
 ## Events
