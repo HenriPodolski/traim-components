@@ -1,22 +1,26 @@
 :host {
-  display: inline-flex;
+  display: var(--autocomplete-display, block);
   box-sizing: border-box;
+  min-width: var(--autocomplete-input-min-width, 150px);
+  width: var(--autocomplete-input-width, auto);
+  max-width: var(--autocomplete-input-max-width, 300px);
 }
 
 .autocomplete {
 
   position: relative;
-  display: inline-flex;
+  display: flex;
 
   &__input {
-    min-width: var(--autocomplete-input-min-width, 150px);
-    width: var(--autocomplete-input-width, auto);
-    max-width: var(--autocomplete-input-max-width, 300px);
-    text-transform: none;
-    padding: var(--autocomplete-input-padding-horizontal, 3px) var(--autocomplete-item-padding-vertical, 6px);
+    width: 100%;
+    font-family: var(--autocomplete-input-font-family, Arial);
+    font-size: var(--autocomplete-input-font-size, inherit);
+    font-weight: var(--autocomplete-input-font-weight, normal);
+    text-transform: var(--autocomplete-input-text-transform, none);
+    padding: var(--autocomplete-input-padding-horizontal, 3px) var(--autocomplete-input-padding-vertical, 6px);
 
     &::placeholder {
-      color: var(--autocomplete-placeholder-color, grey);
+      color: var(--autocomplete-input-placeholder-color, grey);
     }
   }
 
@@ -30,9 +34,9 @@
     margin: 0;
     background-color: white;
     z-index: 1;
-    border-left: 1px solid var(--autocomplete-border, lightgray);
-    border-right: 1px solid var(--autocomplete-border, lightgray);
-    border-bottom: 1px solid var(--autocomplete-border, lightgray);
+    border-left: 1px solid var(--autocomplete-list-border-color, lightgray);
+    border-right: 1px solid var(--autocomplete-list-border-color, lightgray);
+    border-bottom: 1px solid var(--autocomplete-list-border-color, lightgray);
   }
 
   &__list-item {

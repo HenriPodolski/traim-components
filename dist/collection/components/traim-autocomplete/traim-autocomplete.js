@@ -97,10 +97,13 @@ export class TraimAutocomplete {
                 if (this.activeItem) {
                     evt.preventDefault();
                     this.select(this.activeItem);
+                    this.close();
                 }
+                break;
             }
             case 'Escape': {
                 this.close();
+                break;
             }
         }
     }
