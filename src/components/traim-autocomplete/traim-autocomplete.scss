@@ -68,6 +68,14 @@
   }
 
   &__empty {
-
+    padding: var(--autocomplete-item-padding-horizontal, 6px) var(--autocomplete-item-padding-vertical, 12px);
+    font-family: var(--autocomplete-item-font-family, inherit);
+    font-size: var(--autocomplete-item-font-size, inherit);
+    font-weight: var(--autocomplete-item-font-weight, normal);
+    text-align: var(--autocomplete-item-text-align, left);
+    border: none;
+    display: block;
+    background-color: var(--autocomplete-item-background-color, white);
+    width: 100%;
   }
 }

@@ -64,6 +64,15 @@ const TraimAutocomplete = class {
         this.onSelect = createEvent(this, "selectAutocomplete", 7);
         this.onSearch = createEvent(this, "searchAutocomplete", 7);
     }
+    resetChangedHandler(newValue) {
+        this.reset = newValue;
+        if (this.reset) {
+            this.resetField();
+        }
+    }
+    emptyMessageChangedHandler(newValue) {
+        this.emptyMessage = newValue;
+    }
     itemsChangedHandler(newValue) {
         if (!newValue.length) {
             if (this.emptyMessage) {
@@ -77,7 +86,7 @@ const TraimAutocomplete = class {
     }
     async setItems(items) {
         this.items = items;
-        this.value ? this.open() : this.close();
+        this.value || this.emptyMessage ? this.open() : this.close();
     }
     connectedCallback() {
         if (this.itemsJSON && !this.items.length) {
@@ -113,7 +122,7 @@ const TraimAutocomplete = class {
         }
     }
     open() {
-        if (this.items.length) {
+        if (this.items.length || this.emptyMessage) {
             this._isOpen = true;
         }
     }
@@ -122,6 +131,12 @@ const TraimAutocomplete = class {
     }
     empty() {
         console.log('Empty message');
+    }
+    resetField() {
+        this.el.shadowRoot.getElementById(this.uid).value = '';
+        this.activeItem = null;
+        this.value = '';
+        this.onSearch.emit('');
     }
     handleOuterClick(evt) {
         const eventElement = evt.target;
@@ -134,7 +149,7 @@ const TraimAutocomplete = class {
         else if (!this.el.contains(eventElement)) {
             if (eventElement.matches('[type="reset"]') &&
                 eventElement.form.contains(this.el)) {
-                this.el.shadowRoot.getElementById(this.uid).value = '';
+                this.resetField();
             }
             this.close();
         }
@@ -172,16 +187,18 @@ const TraimAutocomplete = class {
         }
     }
     render() {
-        return (h("div", { class: "autocomplete" }, h("input", { id: this.uid, name: this.uid, type: "search", class: "autocomplete__input", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: (e) => this.search(e), onFocus: () => this.open(), onClick: () => this.open() }), this._isOpen && (h("div", { role: "menu", class: "autocomplete__list" }, this.items.map((item) => {
+        return (h("div", { class: "autocomplete" }, h("input", { id: this.uid, name: this.uid, type: "search", class: "autocomplete__input", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: (e) => this.search(e), onFocus: () => this.open(), onClick: () => this.open() }), (this._isOpen) && (h("div", { role: "menu", class: "autocomplete__list" }, this.items.map((item) => {
             const isActiveClass = this.activeItem === item ? 'is-active' : '';
             return (h("button", { role: "menuitem", class: `autocomplete__list-item ${isActiveClass}`, onClick: () => this.select(item) }, item.value.title));
-        }), this.emptyMessage && this.items.length === 0 && (h("p", null, this.emptyMessage))))));
+        }), this.emptyMessage && this.items.length === 0 && (h("div", { role: "menuitem", "aria-disabled": true, class: "autocomplete__empty" }, this.emptyMessage))))));
     }
     get el() { return getElement(this); }
     static get watchers() { return {
+        "reset": ["resetChangedHandler"],
+        "emptyMessage": ["emptyMessageChangedHandler"],
         "items": ["itemsChangedHandler"]
     }; }
-    static get style() { return ":host{display:var(--autocomplete-display,block);-webkit-box-sizing:border-box;box-sizing:border-box;min-width:var(--autocomplete-input-min-width,150px);width:var(--autocomplete-input-width,auto);max-width:var(--autocomplete-input-max-width,300px)}.autocomplete{position:relative;display:-ms-flexbox;display:flex}.autocomplete__input{width:100%;font-family:var(--autocomplete-input-font-family,Arial);font-size:var(--autocomplete-input-font-size,inherit);font-weight:var(--autocomplete-input-font-weight,normal);text-transform:var(--autocomplete-input-text-transform,none);padding:var(--autocomplete-input-padding-horizontal,3px) var(--autocomplete-input-padding-vertical,6px)}.autocomplete__input::-webkit-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::-moz-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input:-ms-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::-ms-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__list{position:absolute;width:100%;top:100%;left:-1px;list-style:none outside;padding-left:0;margin:0;background-color:#fff;z-index:1;border-left:1px solid var(--autocomplete-list-border-color,#d3d3d3);border-right:1px solid var(--autocomplete-list-border-color,#d3d3d3);border-bottom:1px solid var(--autocomplete-list-border-color,#d3d3d3)}.autocomplete__list-item{-webkit-appearance:none;padding:var(--autocomplete-item-padding-horizontal,6px) var(--autocomplete-item-padding-vertical,12px);cursor:pointer;font-family:var(--autocomplete-item-font-family,inherit);font-size:var(--autocomplete-item-font-size,inherit);font-weight:var(--autocomplete-item-font-weight,normal);text-align:var(--autocomplete-item-text-align,left);border:none;display:block;background-color:var(--autocomplete-item-background-color,#fff);width:100%}.autocomplete__list-item:focus,.autocomplete__list-item:hover{background-color:var(--autocomplete-user-action-item-background-color,rgba(0,149,198,.3))}.autocomplete__list-item:focus{outline:2px solid var(--autocomplete-user-action-item-outline-color,rgba(0,149,198,.8));outline-offset:-2px}.autocomplete__list-item.is-active{background-color:var(--autocomplete-active-item-background-color,rgba(0,149,198,.3))}"; }
+    static get style() { return ":host{display:var(--autocomplete-display,block);-webkit-box-sizing:border-box;box-sizing:border-box;min-width:var(--autocomplete-input-min-width,150px);width:var(--autocomplete-input-width,auto);max-width:var(--autocomplete-input-max-width,300px)}.autocomplete{position:relative;display:-ms-flexbox;display:flex}.autocomplete__input{width:100%;font-family:var(--autocomplete-input-font-family,Arial);font-size:var(--autocomplete-input-font-size,inherit);font-weight:var(--autocomplete-input-font-weight,normal);text-transform:var(--autocomplete-input-text-transform,none);padding:var(--autocomplete-input-padding-horizontal,3px) var(--autocomplete-input-padding-vertical,6px)}.autocomplete__input::-webkit-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::-moz-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input:-ms-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::-ms-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__list{position:absolute;width:100%;top:100%;left:-1px;list-style:none outside;padding-left:0;margin:0;background-color:#fff;z-index:1;border-left:1px solid var(--autocomplete-list-border-color,#d3d3d3);border-right:1px solid var(--autocomplete-list-border-color,#d3d3d3);border-bottom:1px solid var(--autocomplete-list-border-color,#d3d3d3)}.autocomplete__list-item{-webkit-appearance:none;padding:var(--autocomplete-item-padding-horizontal,6px) var(--autocomplete-item-padding-vertical,12px);cursor:pointer;font-family:var(--autocomplete-item-font-family,inherit);font-size:var(--autocomplete-item-font-size,inherit);font-weight:var(--autocomplete-item-font-weight,normal);text-align:var(--autocomplete-item-text-align,left);border:none;display:block;background-color:var(--autocomplete-item-background-color,#fff);width:100%}.autocomplete__list-item:focus,.autocomplete__list-item:hover{background-color:var(--autocomplete-user-action-item-background-color,rgba(0,149,198,.3))}.autocomplete__list-item:focus{outline:2px solid var(--autocomplete-user-action-item-outline-color,rgba(0,149,198,.8));outline-offset:-2px}.autocomplete__list-item.is-active{background-color:var(--autocomplete-active-item-background-color,rgba(0,149,198,.3))}.autocomplete__empty{padding:var(--autocomplete-item-padding-horizontal,6px) var(--autocomplete-item-padding-vertical,12px);font-family:var(--autocomplete-item-font-family,inherit);font-size:var(--autocomplete-item-font-size,inherit);font-weight:var(--autocomplete-item-font-weight,normal);text-align:var(--autocomplete-item-text-align,left);border:none;display:block;background-color:var(--autocomplete-item-background-color,#fff);width:100%}"; }
 };
 
 export { TraimAccordion as traim_accordion, TraimAccordionPane as traim_accordion_pane, TraimAutocomplete as traim_autocomplete };

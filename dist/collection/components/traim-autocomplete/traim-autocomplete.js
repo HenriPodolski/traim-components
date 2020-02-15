@@ -4,6 +4,15 @@ export class TraimAutocomplete {
         this.items = [];
         this.handleOuterClick = this.handleOuterClick.bind(this);
     }
+    resetChangedHandler(newValue) {
+        this.reset = newValue;
+        if (this.reset) {
+            this.resetField();
+        }
+    }
+    emptyMessageChangedHandler(newValue) {
+        this.emptyMessage = newValue;
+    }
     itemsChangedHandler(newValue) {
         if (!newValue.length) {
             if (this.emptyMessage) {
@@ -17,7 +26,7 @@ export class TraimAutocomplete {
     }
     async setItems(items) {
         this.items = items;
-        this.value ? this.open() : this.close();
+        this.value || this.emptyMessage ? this.open() : this.close();
     }
     connectedCallback() {
         if (this.itemsJSON && !this.items.length) {
@@ -53,7 +62,7 @@ export class TraimAutocomplete {
         }
     }
     open() {
-        if (this.items.length) {
+        if (this.items.length || this.emptyMessage) {
             this._isOpen = true;
         }
     }
@@ -62,6 +71,12 @@ export class TraimAutocomplete {
     }
     empty() {
         console.log('Empty message');
+    }
+    resetField() {
+        this.el.shadowRoot.getElementById(this.uid).value = '';
+        this.activeItem = null;
+        this.value = '';
+        this.onSearch.emit('');
     }
     handleOuterClick(evt) {
         const eventElement = evt.target;
@@ -74,7 +89,7 @@ export class TraimAutocomplete {
         else if (!this.el.contains(eventElement)) {
             if (eventElement.matches('[type="reset"]') &&
                 eventElement.form.contains(this.el)) {
-                this.el.shadowRoot.getElementById(this.uid).value = '';
+                this.resetField();
             }
             this.close();
         }
@@ -114,12 +129,12 @@ export class TraimAutocomplete {
     render() {
         return (h("div", { class: "autocomplete" },
             h("input", { id: this.uid, name: this.uid, type: "search", class: "autocomplete__input", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: (e) => this.search(e), onFocus: () => this.open(), onClick: () => this.open() }),
-            this._isOpen && (h("div", { role: "menu", class: "autocomplete__list" },
+            (this._isOpen) && (h("div", { role: "menu", class: "autocomplete__list" },
                 this.items.map((item) => {
                     const isActiveClass = this.activeItem === item ? 'is-active' : '';
                     return (h("button", { role: "menuitem", class: `autocomplete__list-item ${isActiveClass}`, onClick: () => this.select(item) }, item.value.title));
                 }),
-                this.emptyMessage && this.items.length === 0 && (h("p", null, this.emptyMessage))))));
+                this.emptyMessage && this.items.length === 0 && (h("div", { role: "menuitem", "aria-disabled": true, class: "autocomplete__empty" }, this.emptyMessage))))));
     }
     static get is() { return "traim-autocomplete"; }
     static get encapsulation() { return "shadow"; }
@@ -181,6 +196,40 @@ export class TraimAutocomplete {
             "attribute": "items-json",
             "reflect": false
         },
+        "reset": {
+            "type": "boolean",
+            "mutable": false,
+            "complexType": {
+                "original": "boolean",
+                "resolved": "boolean",
+                "references": {}
+            },
+            "required": false,
+            "optional": false,
+            "docs": {
+                "tags": [],
+                "text": ""
+            },
+            "attribute": "reset",
+            "reflect": false
+        },
+        "emptyMessage": {
+            "type": "string",
+            "mutable": false,
+            "complexType": {
+                "original": "string",
+                "resolved": "string",
+                "references": {}
+            },
+            "required": false,
+            "optional": false,
+            "docs": {
+                "tags": [],
+                "text": ""
+            },
+            "attribute": "empty-message",
+            "reflect": false
+        },
         "items": {
             "type": "unknown",
             "mutable": true,
@@ -201,23 +250,6 @@ export class TraimAutocomplete {
                 "text": ""
             },
             "defaultValue": "[]"
-        },
-        "emptyMessage": {
-            "type": "string",
-            "mutable": false,
-            "complexType": {
-                "original": "string",
-                "resolved": "string",
-                "references": {}
-            },
-            "required": false,
-            "optional": false,
-            "docs": {
-                "tags": [],
-                "text": ""
-            },
-            "attribute": "empty-message",
-            "reflect": false
         }
     }; }
     static get states() { return {
@@ -287,6 +319,12 @@ export class TraimAutocomplete {
     }; }
     static get elementRef() { return "el"; }
     static get watchers() { return [{
+            "propName": "reset",
+            "methodName": "resetChangedHandler"
+        }, {
+            "propName": "emptyMessage",
+            "methodName": "emptyMessageChangedHandler"
+        }, {
             "propName": "items",
             "methodName": "itemsChangedHandler"
         }]; }

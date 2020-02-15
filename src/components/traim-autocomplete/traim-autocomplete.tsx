@@ -19,11 +19,27 @@ export class TraimAutocomplete {
   })
   itemsJSON: string;
 
-  @Prop({ mutable: true })
-  items: IAutoCompleteItem[] = [];
+  @Prop()
+  reset: boolean;
+
+  @Watch('reset')
+  resetChangedHandler(newValue: boolean) {
+    this.reset = newValue;
+    if (this.reset) {
+      this.resetField();
+    }
+  }
 
   @Prop()
   emptyMessage: string;
+
+  @Watch('emptyMessage')
+  emptyMessageChangedHandler(newValue: string) {
+    this.emptyMessage = newValue;
+  }
+
+  @Prop({ mutable: true })
+  items: IAutoCompleteItem[] = [];
 
   @Watch('items')
   itemsChangedHandler(newValue: IAutoCompleteItem[]) {
@@ -60,7 +76,7 @@ export class TraimAutocomplete {
   @Method()
   async setItems(items: Array<IAutoCompleteItem>) {
     this.items = items;
-    this.value ? this.open() : this.close();
+    this.value || this.emptyMessage ? this.open() : this.close();
   }
 
   constructor() {
@@ -105,7 +121,7 @@ export class TraimAutocomplete {
   }
 
   open() {
-    if (this.items.length) {
+    if (this.items.length || this.emptyMessage) {
       this._isOpen = true;
     }
   }
@@ -116,6 +132,13 @@ export class TraimAutocomplete {
 
   empty() {
     console.log('Empty message');
+  }
+
+  resetField() {
+    (this.el.shadowRoot.getElementById(this.uid) as HTMLInputElement | HTMLTextAreaElement).value = '';
+    this.activeItem = null;
+    this.value = '';
+    this.onSearch.emit('');
   }
 
   @Listen('click', {target: 'window'})
@@ -130,7 +153,7 @@ export class TraimAutocomplete {
     } else if (!this.el.contains(eventElement)) {
       if (eventElement.matches('[type="reset"]') &&
           (eventElement as HTMLInputElement | HTMLButtonElement).form.contains(this.el)) {
-        (this.el.shadowRoot.getElementById(this.uid) as HTMLInputElement).value = '';
+        this.resetField();
       }
 
       this.close();
@@ -187,7 +210,7 @@ export class TraimAutocomplete {
           onFocus={() => this.open()}
           onClick={() => this.open()}
         />
-        {this._isOpen && (
+        {(this._isOpen) && (
           <div role="menu" class="autocomplete__list">
             {this.items.map((item) => {
               const isActiveClass = this.activeItem === item ? 'is-active' : '';
@@ -198,7 +221,7 @@ export class TraimAutocomplete {
               );
             })}
             {this.emptyMessage && this.items.length === 0 && (
-              <p class="autocomplete__empty">{this.emptyMessage}</p>
+              <div role="menuitem" aria-disabled class="autocomplete__empty">{this.emptyMessage}</div>
             )}
           </div>
         )}

@@ -4,8 +4,11 @@ export declare class TraimAutocomplete {
     placeholder: string;
     uid: string;
     itemsJSON: string;
-    items: IAutoCompleteItem[];
+    reset: boolean;
+    resetChangedHandler(newValue: boolean): void;
     emptyMessage: string;
+    emptyMessageChangedHandler(newValue: string): void;
+    items: IAutoCompleteItem[];
     itemsChangedHandler(newValue: IAutoCompleteItem[]): void;
     onSelect: EventEmitter;
     onSearch: EventEmitter;
@@ -22,6 +25,7 @@ export declare class TraimAutocomplete {
     open(): void;
     close(): void;
     empty(): void;
+    resetField(): void;
     handleOuterClick(evt: Event): void;
     handleKeyDown(evt: KeyboardEvent): void;
     render(): any;

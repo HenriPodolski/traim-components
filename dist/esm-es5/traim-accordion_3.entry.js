@@ -126,6 +126,15 @@ var TraimAutocomplete = /** @class */ (function () {
         this.onSelect = createEvent(this, "selectAutocomplete", 7);
         this.onSearch = createEvent(this, "searchAutocomplete", 7);
     }
+    class_2.prototype.resetChangedHandler = function (newValue) {
+        this.reset = newValue;
+        if (this.reset) {
+            this.resetField();
+        }
+    };
+    class_2.prototype.emptyMessageChangedHandler = function (newValue) {
+        this.emptyMessage = newValue;
+    };
     class_2.prototype.itemsChangedHandler = function (newValue) {
         if (!newValue.length) {
             if (this.emptyMessage) {
@@ -141,7 +150,7 @@ var TraimAutocomplete = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 this.items = items;
-                this.value ? this.open() : this.close();
+                this.value || this.emptyMessage ? this.open() : this.close();
                 return [2 /*return*/];
             });
         });
@@ -181,7 +190,7 @@ var TraimAutocomplete = /** @class */ (function () {
         }
     };
     class_2.prototype.open = function () {
-        if (this.items.length) {
+        if (this.items.length || this.emptyMessage) {
             this._isOpen = true;
         }
     };
@@ -190,6 +199,12 @@ var TraimAutocomplete = /** @class */ (function () {
     };
     class_2.prototype.empty = function () {
         console.log('Empty message');
+    };
+    class_2.prototype.resetField = function () {
+        this.el.shadowRoot.getElementById(this.uid).value = '';
+        this.activeItem = null;
+        this.value = '';
+        this.onSearch.emit('');
     };
     class_2.prototype.handleOuterClick = function (evt) {
         var eventElement = evt.target;
@@ -202,7 +217,7 @@ var TraimAutocomplete = /** @class */ (function () {
         else if (!this.el.contains(eventElement)) {
             if (eventElement.matches('[type="reset"]') &&
                 eventElement.form.contains(this.el)) {
-                this.el.shadowRoot.getElementById(this.uid).value = '';
+                this.resetField();
             }
             this.close();
         }
@@ -241,10 +256,10 @@ var TraimAutocomplete = /** @class */ (function () {
     };
     class_2.prototype.render = function () {
         var _this = this;
-        return (h("div", { class: "autocomplete" }, h("input", { id: this.uid, name: this.uid, type: "search", class: "autocomplete__input", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: function (e) { return _this.search(e); }, onFocus: function () { return _this.open(); }, onClick: function () { return _this.open(); } }), this._isOpen && (h("div", { role: "menu", class: "autocomplete__list" }, this.items.map(function (item) {
+        return (h("div", { class: "autocomplete" }, h("input", { id: this.uid, name: this.uid, type: "search", class: "autocomplete__input", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: function (e) { return _this.search(e); }, onFocus: function () { return _this.open(); }, onClick: function () { return _this.open(); } }), (this._isOpen) && (h("div", { role: "menu", class: "autocomplete__list" }, this.items.map(function (item) {
             var isActiveClass = _this.activeItem === item ? 'is-active' : '';
             return (h("button", { role: "menuitem", class: "autocomplete__list-item " + isActiveClass, onClick: function () { return _this.select(item); } }, item.value.title));
-        }), this.emptyMessage && this.items.length === 0 && (h("p", null, this.emptyMessage))))));
+        }), this.emptyMessage && this.items.length === 0 && (h("div", { role: "menuitem", "aria-disabled": true, class: "autocomplete__empty" }, this.emptyMessage))))));
     };
     Object.defineProperty(class_2.prototype, "el", {
         get: function () { return getElement(this); },
@@ -254,6 +269,8 @@ var TraimAutocomplete = /** @class */ (function () {
     Object.defineProperty(class_2, "watchers", {
         get: function () {
             return {
+                "reset": ["resetChangedHandler"],
+                "emptyMessage": ["emptyMessageChangedHandler"],
                 "items": ["itemsChangedHandler"]
             };
         },
@@ -261,7 +278,7 @@ var TraimAutocomplete = /** @class */ (function () {
         configurable: true
     });
     Object.defineProperty(class_2, "style", {
-        get: function () { return ":host{display:var(--autocomplete-display,block);-webkit-box-sizing:border-box;box-sizing:border-box;min-width:var(--autocomplete-input-min-width,150px);width:var(--autocomplete-input-width,auto);max-width:var(--autocomplete-input-max-width,300px)}.autocomplete{position:relative;display:-ms-flexbox;display:flex}.autocomplete__input{width:100%;font-family:var(--autocomplete-input-font-family,Arial);font-size:var(--autocomplete-input-font-size,inherit);font-weight:var(--autocomplete-input-font-weight,normal);text-transform:var(--autocomplete-input-text-transform,none);padding:var(--autocomplete-input-padding-horizontal,3px) var(--autocomplete-input-padding-vertical,6px)}.autocomplete__input::-webkit-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::-moz-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input:-ms-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::-ms-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__list{position:absolute;width:100%;top:100%;left:-1px;list-style:none outside;padding-left:0;margin:0;background-color:#fff;z-index:1;border-left:1px solid var(--autocomplete-list-border-color,#d3d3d3);border-right:1px solid var(--autocomplete-list-border-color,#d3d3d3);border-bottom:1px solid var(--autocomplete-list-border-color,#d3d3d3)}.autocomplete__list-item{-webkit-appearance:none;padding:var(--autocomplete-item-padding-horizontal,6px) var(--autocomplete-item-padding-vertical,12px);cursor:pointer;font-family:var(--autocomplete-item-font-family,inherit);font-size:var(--autocomplete-item-font-size,inherit);font-weight:var(--autocomplete-item-font-weight,normal);text-align:var(--autocomplete-item-text-align,left);border:none;display:block;background-color:var(--autocomplete-item-background-color,#fff);width:100%}.autocomplete__list-item:focus,.autocomplete__list-item:hover{background-color:var(--autocomplete-user-action-item-background-color,rgba(0,149,198,.3))}.autocomplete__list-item:focus{outline:2px solid var(--autocomplete-user-action-item-outline-color,rgba(0,149,198,.8));outline-offset:-2px}.autocomplete__list-item.is-active{background-color:var(--autocomplete-active-item-background-color,rgba(0,149,198,.3))}"; },
+        get: function () { return ":host{display:var(--autocomplete-display,block);-webkit-box-sizing:border-box;box-sizing:border-box;min-width:var(--autocomplete-input-min-width,150px);width:var(--autocomplete-input-width,auto);max-width:var(--autocomplete-input-max-width,300px)}.autocomplete{position:relative;display:-ms-flexbox;display:flex}.autocomplete__input{width:100%;font-family:var(--autocomplete-input-font-family,Arial);font-size:var(--autocomplete-input-font-size,inherit);font-weight:var(--autocomplete-input-font-weight,normal);text-transform:var(--autocomplete-input-text-transform,none);padding:var(--autocomplete-input-padding-horizontal,3px) var(--autocomplete-input-padding-vertical,6px)}.autocomplete__input::-webkit-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::-moz-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input:-ms-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::-ms-input-placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__input::placeholder{color:var(--autocomplete-input-placeholder-color,grey)}.autocomplete__list{position:absolute;width:100%;top:100%;left:-1px;list-style:none outside;padding-left:0;margin:0;background-color:#fff;z-index:1;border-left:1px solid var(--autocomplete-list-border-color,#d3d3d3);border-right:1px solid var(--autocomplete-list-border-color,#d3d3d3);border-bottom:1px solid var(--autocomplete-list-border-color,#d3d3d3)}.autocomplete__list-item{-webkit-appearance:none;padding:var(--autocomplete-item-padding-horizontal,6px) var(--autocomplete-item-padding-vertical,12px);cursor:pointer;font-family:var(--autocomplete-item-font-family,inherit);font-size:var(--autocomplete-item-font-size,inherit);font-weight:var(--autocomplete-item-font-weight,normal);text-align:var(--autocomplete-item-text-align,left);border:none;display:block;background-color:var(--autocomplete-item-background-color,#fff);width:100%}.autocomplete__list-item:focus,.autocomplete__list-item:hover{background-color:var(--autocomplete-user-action-item-background-color,rgba(0,149,198,.3))}.autocomplete__list-item:focus{outline:2px solid var(--autocomplete-user-action-item-outline-color,rgba(0,149,198,.8));outline-offset:-2px}.autocomplete__list-item.is-active{background-color:var(--autocomplete-active-item-background-color,rgba(0,149,198,.3))}.autocomplete__empty{padding:var(--autocomplete-item-padding-horizontal,6px) var(--autocomplete-item-padding-vertical,12px);font-family:var(--autocomplete-item-font-family,inherit);font-size:var(--autocomplete-item-font-size,inherit);font-weight:var(--autocomplete-item-font-weight,normal);text-align:var(--autocomplete-item-text-align,left);border:none;display:block;background-color:var(--autocomplete-item-background-color,#fff);width:100%}"; },
         enumerable: true,
         configurable: true
     });

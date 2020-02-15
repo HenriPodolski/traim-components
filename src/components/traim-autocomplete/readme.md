@@ -13,6 +13,7 @@
 | `items`        | --              |             | `IAutoCompleteItem[]` | `[]`        |
 | `itemsJSON`    | `items-json`    |             | `string`              | `undefined` |
 | `placeholder`  | `placeholder`   |             | `string`              | `undefined` |
+| `reset`        | `reset`         |             | `boolean`             | `undefined` |
 | `uid`          | `uid`           |             | `string`              | `undefined` |
 
 
