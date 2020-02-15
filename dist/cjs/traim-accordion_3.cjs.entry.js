@@ -136,6 +136,10 @@ const TraimAutocomplete = class {
             }
         }
         else if (!this.el.contains(eventElement)) {
+            if (eventElement.matches('[type="reset"]') &&
+                eventElement.form.contains(this.el)) {
+                this.el.shadowRoot.getElementById(this.uid).value = '';
+            }
             this.close();
         }
     }
@@ -175,7 +179,7 @@ const TraimAutocomplete = class {
         return (core.h("div", { class: "autocomplete" }, core.h("input", { id: this.uid, name: this.uid, type: "search", class: "autocomplete__input", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: (e) => this.search(e), onFocus: () => this.open(), onClick: () => this.open() }), this._isOpen && (core.h("div", { role: "menu", class: "autocomplete__list" }, this.items.map((item) => {
             const isActiveClass = this.activeItem === item ? 'is-active' : '';
             return (core.h("button", { role: "menuitem", class: `autocomplete__list-item ${isActiveClass}`, onClick: () => this.select(item) }, item.value.title));
-        })))));
+        }), this.emptyMessage && this.items.length === 0 && (core.h("p", null, this.emptyMessage))))));
     }
     get el() { return core.getElement(this); }
     static get watchers() { return {

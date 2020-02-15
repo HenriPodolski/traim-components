@@ -200,6 +200,10 @@ var TraimAutocomplete = /** @class */ (function () {
             }
         }
         else if (!this.el.contains(eventElement)) {
+            if (eventElement.matches('[type="reset"]') &&
+                eventElement.form.contains(this.el)) {
+                this.el.shadowRoot.getElementById(this.uid).value = '';
+            }
             this.close();
         }
     };
@@ -240,7 +244,7 @@ var TraimAutocomplete = /** @class */ (function () {
         return (h("div", { class: "autocomplete" }, h("input", { id: this.uid, name: this.uid, type: "search", class: "autocomplete__input", placeholder: this.placeholder, autocomplete: "off", value: this.value, onInput: function (e) { return _this.search(e); }, onFocus: function () { return _this.open(); }, onClick: function () { return _this.open(); } }), this._isOpen && (h("div", { role: "menu", class: "autocomplete__list" }, this.items.map(function (item) {
             var isActiveClass = _this.activeItem === item ? 'is-active' : '';
             return (h("button", { role: "menuitem", class: "autocomplete__list-item " + isActiveClass, onClick: function () { return _this.select(item); } }, item.value.title));
-        })))));
+        }), this.emptyMessage && this.items.length === 0 && (h("p", null, this.emptyMessage))))));
     };
     Object.defineProperty(class_2.prototype, "el", {
         get: function () { return getElement(this); },

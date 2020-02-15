@@ -128,6 +128,11 @@ export class TraimAutocomplete {
         focusEl.focus();
       }
     } else if (!this.el.contains(eventElement)) {
+      if (eventElement.matches('[type="reset"]') &&
+          (eventElement as HTMLInputElement | HTMLButtonElement).form.contains(this.el)) {
+        (this.el.shadowRoot.getElementById(this.uid) as HTMLInputElement).value = '';
+      }
+
       this.close();
     }
   }
@@ -192,6 +197,9 @@ export class TraimAutocomplete {
                 </button>
               );
             })}
+            {this.emptyMessage && this.items.length === 0 && (
+              <p class="autocomplete__empty">{this.emptyMessage}</p>
+            )}
           </div>
         )}
       </div>
