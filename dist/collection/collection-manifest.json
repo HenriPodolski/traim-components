@@ -1,12 +1,14 @@
 {
   "entries": [
-    "components\\traim-accordion-pane\\traim-accordion-pane.js",
+    "components\\traim-slider-slide\\traim-slider-slide.js",
+    "components\\traim-slider\\traim-slider.js",
     "components\\traim-accordion\\traim-accordion.js",
-    "components\\traim-autocomplete\\traim-autocomplete.js",
+    "components\\traim-accordion-pane\\traim-accordion-pane.js",
     "components\\traim-tab\\traim-tab.js",
-    "components\\traim-tabs\\traim-tabs.js",
-    "components\\traim-timeline-item\\traim-timeline-item.js",
+    "components\\traim-autocomplete\\traim-autocomplete.js",
     "components\\traim-timeline\\traim-timeline.js",
+    "components\\traim-timeline-item\\traim-timeline-item.js",
+    "components\\traim-tabs\\traim-tabs.js",
     "components\\traim-tooltip\\traim-tooltip.js"
   ],
   "compiler": {

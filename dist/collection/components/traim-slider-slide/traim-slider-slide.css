@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.slider-slide {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  min-height: 40px;
+}
+.slider-slide.is-active {
+  display: flex;
+}

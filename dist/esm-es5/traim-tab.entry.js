@@ -1,4 +1,4 @@
-import { r as registerInstance, c as createEvent, h } from './core-5e402d93.js';
+import { r as registerInstance, c as createEvent, h } from './core-705deb91.js';
 var TraimTab = /** @class */ (function () {
     function TraimTab(hostRef) {
         registerInstance(this, hostRef);

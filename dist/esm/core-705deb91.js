@@ -248,6 +248,10 @@ const parsePropertyValue = (propValue, propType) => {
             // but we'll cheat here and say that the string "false" is the boolean false
             return (propValue === 'false' ? false : propValue === '' || !!propValue);
         }
+        if ( propType & 2 /* Number */) {
+            // force it to be a number
+            return parseFloat(propValue);
+        }
         if ( propType & 1 /* String */) {
             // could have been passed as a number or boolean
             // but we still want it as a string
@@ -450,6 +454,12 @@ const setAccessor = (elm, memberName, oldValue, newValue, isSvg, flags) => {
         const newClasses = parseClassList(newValue);
         classList.remove(...oldClasses.filter(c => c && !newClasses.includes(c)));
         classList.add(...newClasses.filter(c => c && !oldClasses.includes(c)));
+    }
+    else if ( memberName === 'ref') {
+        // minifier will clean this up
+        if (newValue) {
+            newValue(elm);
+        }
     }
     else if ( !isProp && memberName[0] === 'o' && memberName[1] === 'n') {
         // Event Handlers
@@ -666,6 +676,7 @@ const removeVnodes = (vnodes, startIdx, endIdx, vnode, elm) => {
     for (; startIdx <= endIdx; ++startIdx) {
         if (vnode = vnodes[startIdx]) {
             elm = vnode.$elm$;
+            callNodeRefs(vnode);
             {
                 // we're removing this element
                 // so it's possible we need to show slot fallback content now
@@ -958,6 +969,12 @@ const isNodeLocatedInSlot = (nodeToRelocate, slotNameAttr) => {
     }
     return slotNameAttr === '';
 };
+const callNodeRefs = (vNode) => {
+    {
+        vNode.$attrs$ && vNode.$attrs$.ref && vNode.$attrs$.ref(null);
+        vNode.$children$ && vNode.$children$.forEach(callNodeRefs);
+    }
+};
 const renderVdom = (hostElm, hostRef, cmpMeta, renderFnResults) => {
     hostTagName = hostElm.tagName;
     const oldVNode = hostRef.$vnode$ || newVNode(null, null);
@@ -1158,6 +1175,7 @@ const callRender = (instance, elm) => {
 };
 const postUpdateComponent = (elm, hostRef, cmpMeta) => {
     const endPostUpdate = createTime('postUpdate', cmpMeta.$tagName$);
+    const instance =  hostRef.$lazyInstance$ ;
     const ancestorComponent = hostRef.$ancestorComponent$;
     if (!(hostRef.$flags$ & 64 /* hasLoadedComponent */)) {
         hostRef.$flags$ |= 64 /* hasLoadedComponent */;
@@ -1165,6 +1183,9 @@ const postUpdateComponent = (elm, hostRef, cmpMeta) => {
             // DOM WRITE!
             // add the css class that this element has officially hydrated
             elm.classList.add(HYDRATED_CLASS);
+        }
+        {
+            safeCall(instance, 'componentDidLoad');
         }
         endPostUpdate();
         {
@@ -1526,6 +1547,7 @@ const setContentReference = (elm) => {
 const disconnectedCallback = (elm) => {
     if ((plt.$flags$ & 1 /* isTmpDisconnected */) === 0) {
         const hostRef = getHostRef(elm);
+        const instance =  hostRef.$lazyInstance$ ;
         {
             if (hostRef.$rmListeners$) {
                 hostRef.$rmListeners$();
@@ -1535,6 +1557,9 @@ const disconnectedCallback = (elm) => {
         // clear CSS var-shim tracking
         if ( plt.$cssShim$) {
             plt.$cssShim$.removeHost(elm);
+        }
+        {
+            safeCall(instance, 'disconnectedCallback');
         }
     }
 };

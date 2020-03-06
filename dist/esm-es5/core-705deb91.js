@@ -303,6 +303,10 @@ var parsePropertyValue = function (propValue, propType) {
             // but we'll cheat here and say that the string "false" is the boolean false
             return (propValue === 'false' ? false : propValue === '' || !!propValue);
         }
+        if (propType & 2 /* Number */) {
+            // force it to be a number
+            return parseFloat(propValue);
+        }
         if (propType & 1 /* String */) {
             // could have been passed as a number or boolean
             // but we still want it as a string
@@ -510,6 +514,12 @@ var setAccessor = function (elm, memberName, oldValue, newValue, isSvg, flags) {
         var newClasses_1 = parseClassList(newValue);
         classList.remove.apply(classList, oldClasses_1.filter(function (c) { return c && !newClasses_1.includes(c); }));
         classList.add.apply(classList, newClasses_1.filter(function (c) { return c && !oldClasses_1.includes(c); }));
+    }
+    else if (memberName === 'ref') {
+        // minifier will clean this up
+        if (newValue) {
+            newValue(elm);
+        }
     }
     else if (!isProp && memberName[0] === 'o' && memberName[1] === 'n') {
         // Event Handlers
@@ -726,6 +736,7 @@ var removeVnodes = function (vnodes, startIdx, endIdx, vnode, elm) {
     for (; startIdx <= endIdx; ++startIdx) {
         if (vnode = vnodes[startIdx]) {
             elm = vnode.$elm$;
+            callNodeRefs(vnode);
             {
                 // we're removing this element
                 // so it's possible we need to show slot fallback content now
@@ -1018,6 +1029,12 @@ var isNodeLocatedInSlot = function (nodeToRelocate, slotNameAttr) {
     }
     return slotNameAttr === '';
 };
+var callNodeRefs = function (vNode) {
+    {
+        vNode.$attrs$ && vNode.$attrs$.ref && vNode.$attrs$.ref(null);
+        vNode.$children$ && vNode.$children$.forEach(callNodeRefs);
+    }
+};
 var renderVdom = function (hostElm, hostRef, cmpMeta, renderFnResults) {
     hostTagName = hostElm.tagName;
     var oldVNode = hostRef.$vnode$ || newVNode(null, null);
@@ -1223,6 +1240,7 @@ var callRender = function (instance, elm) {
 };
 var postUpdateComponent = function (elm, hostRef, cmpMeta) {
     var endPostUpdate = createTime('postUpdate', cmpMeta.$tagName$);
+    var instance = hostRef.$lazyInstance$;
     var ancestorComponent = hostRef.$ancestorComponent$;
     if (!(hostRef.$flags$ & 64 /* hasLoadedComponent */)) {
         hostRef.$flags$ |= 64 /* hasLoadedComponent */;
@@ -1230,6 +1248,9 @@ var postUpdateComponent = function (elm, hostRef, cmpMeta) {
             // DOM WRITE!
             // add the css class that this element has officially hydrated
             elm.classList.add(HYDRATED_CLASS);
+        }
+        {
+            safeCall(instance, 'componentDidLoad');
         }
         endPostUpdate();
         {
@@ -1611,6 +1632,7 @@ var setContentReference = function (elm) {
 var disconnectedCallback = function (elm) {
     if ((plt.$flags$ & 1 /* isTmpDisconnected */) === 0) {
         var hostRef = getHostRef(elm);
+        var instance = hostRef.$lazyInstance$;
         {
             if (hostRef.$rmListeners$) {
                 hostRef.$rmListeners$();
@@ -1620,6 +1642,9 @@ var disconnectedCallback = function (elm) {
         // clear CSS var-shim tracking
         if (plt.$cssShim$) {
             plt.$cssShim$.removeHost(elm);
+        }
+        {
+            safeCall(instance, 'disconnectedCallback');
         }
     }
 };

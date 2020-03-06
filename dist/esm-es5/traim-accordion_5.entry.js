@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { r as registerInstance, c as createEvent, h, g as getElement } from './core-5e402d93.js';
+import { r as registerInstance, c as createEvent, h, g as getElement, H as Host } from './core-705deb91.js';
 var TraimAccordion = /** @class */ (function () {
     function TraimAccordion(hostRef) {
         registerInstance(this, hostRef);
@@ -284,4 +284,80 @@ var TraimAutocomplete = /** @class */ (function () {
     });
     return class_2;
 }());
-export { TraimAccordion as traim_accordion, TraimAccordionPane as traim_accordion_pane, TraimAutocomplete as traim_autocomplete };
+var TraimSliderAnimationEnum;
+(function (TraimSliderAnimationEnum) {
+    TraimSliderAnimationEnum["NONE"] = "";
+    TraimSliderAnimationEnum["FADE"] = "is-fade-animation";
+    TraimSliderAnimationEnum["SLIDE"] = "is-slide-animation";
+})(TraimSliderAnimationEnum || (TraimSliderAnimationEnum = {}));
+var TraimSlider = /** @class */ (function () {
+    function TraimSlider(hostRef) {
+        registerInstance(this, hostRef);
+        this.controlLeftText = 'Previous';
+        this.controlRightText = 'Next';
+        this.animation = TraimSliderAnimationEnum.NONE;
+        this.activeSlideIndex = 0;
+        this.handleSlotChange = this.handleSlotChange.bind(this);
+    }
+    TraimSlider.prototype.gotoSlide = function (slideIndex) {
+        if (slideIndex < 0) {
+            slideIndex = this.countSlides - 1;
+        }
+        else if (slideIndex > this.countSlides - 1) {
+            slideIndex = 0;
+        }
+        var previousSlide = this.slides.find(function (slide) { return slide.hasAttribute('previous'); });
+        if (previousSlide) {
+            previousSlide.removeAttribute('previous');
+        }
+        if (this.slides[this.activeSlideIndex]) {
+            this.slides[this.activeSlideIndex].removeAttribute('current');
+            this.slides[this.activeSlideIndex].setAttribute('previous', 'true');
+        }
+        if (this.slides[slideIndex]) {
+            this.slides[slideIndex].setAttribute('current', 'true');
+            this.activeSlideIndex = slideIndex;
+        }
+    };
+    TraimSlider.prototype.componentDidLoad = function () {
+        this.slotElement = this.slotWrapperElement.querySelector('slot');
+        this.handleSlotChange();
+        this.slotElement.addEventListener('slotchange', this.handleSlotChange);
+    };
+    TraimSlider.prototype.disconnectedCallback = function () {
+        this.slotElement.removeEventListener('slotchange', this.handleSlotChange);
+    };
+    TraimSlider.prototype.handleSlotChange = function () {
+        this.slides = this.slotElement.assignedElements();
+        this.countSlides = this.slides.length;
+        console.log(this.slides, this.countSlides);
+        this.gotoSlide(this.activeSlideIndex);
+    };
+    TraimSlider.prototype.render = function () {
+        var _this = this;
+        var animationClass = this.animation;
+        return (h(Host, null, h("div", { class: "slider " + animationClass }, h("section", { ref: function (el) { return _this.slotWrapperElement = el; }, class: "slider__slides" }, h("slot", null)), this.countSlides > 1 && this.controls && (h("button", { onClick: function () { return _this.gotoSlide(_this.activeSlideIndex - 1); }, role: "button", class: "slider__button is-left", "aria-label": this.controlLeftText }, h("span", { "aria-hidden": "true", class: "slider__button-inner" }, "\u276E"))), this.countSlides > 1 && this.controls && (h("button", { onClick: function () { return _this.gotoSlide(_this.activeSlideIndex + 1); }, role: "button", class: "slider__button is-right", "aria-label": this.controlRightText }, h("span", { "aria-hidden": "true", class: "slider__button-inner" }, "\u276F"))))));
+    };
+    Object.defineProperty(TraimSlider, "style", {
+        get: function () { return ":host{display:block}.slider{position:relative}.slider__button{position:absolute;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);cursor:pointer;border:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-size:var(--slider-control-button-font-size,14px);padding:var(--slider-padding-horizontal,8px) var(--slider-padding-vertical,16px);color:var(--slider-control-button-color,#000);background-color:var(--slider-control-button-background-color,#f1f1f1)}.slider__button:hover{background-color:var(--slider-control-button-hover-background-color,#ccc)}.slider__button.is-left{left:0}.slider__button.is-right{right:0}"; },
+        enumerable: true,
+        configurable: true
+    });
+    return TraimSlider;
+}());
+var TraimSliderSlide = /** @class */ (function () {
+    function TraimSliderSlide(hostRef) {
+        registerInstance(this, hostRef);
+    }
+    TraimSliderSlide.prototype.render = function () {
+        var activeClass = this.current ? 'is-active' : '';
+        return (h(Host, null, h("div", { class: "slider-slide " + activeClass }, h("slot", null))));
+    };
+    Object.defineProperty(TraimSliderSlide, "style", {
+        get: function () { return ":host{display:block}.slider-slide{display:none;-ms-flex-pack:center;justify-content:center;-ms-flex-align:center;align-items:center;min-height:40px}.slider-slide.is-active{display:-ms-flexbox;display:flex}"; },
+        enumerable: true,
+        configurable: true
+    });
+    return TraimSliderSlide;
+}());
+export { TraimAccordion as traim_accordion, TraimAccordionPane as traim_accordion_pane, TraimAutocomplete as traim_autocomplete, TraimSlider as traim_slider, TraimSliderSlide as traim_slider_slide };

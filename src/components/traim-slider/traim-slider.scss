@@ -1,0 +1,36 @@
+:host {
+  display: block;
+}
+
+.slider {
+  position: relative;
+
+  &__slides {
+
+  }
+
+  &__button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    border: none;
+    user-select: none;
+    font-size: var(--slider-control-button-font-size, 14px);
+    padding: var(--slider-padding-horizontal, 8px) var(--slider-padding-vertical, 16px);
+    color: var(--slider-control-button-color, #000);
+    background-color: var(--slider-control-button-background-color, #F1F1F1);
+
+    &:hover {
+      background-color: var(--slider-control-button-hover-background-color, #CCC);
+    }
+
+    &.is-left {
+      left: 0;
+    }
+
+    &.is-right {
+      right: 0;
+    }
+  }
+}
