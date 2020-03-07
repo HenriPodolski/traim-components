@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop, State } from '@stencil/core';
+import { Component, h, Host, Prop, State, Watch } from '@stencil/core';
 import { TraimSliderAnimationEnum } from './traim-slider-animation.enum';
 
 @Component({
@@ -23,6 +23,17 @@ export class TraimSlider {
   animation: TraimSliderAnimationEnum = TraimSliderAnimationEnum.NONE;
 
   @Prop({
+    attribute: 'items-per-slide',
+    mutable: true
+  })
+  itemsPerSlide: number = 1;
+
+  @Watch('itemsPerSlide')
+  watchItemsPerSlide() {
+    this.handleSlotChange();
+  }
+
+  @Prop({
     mutable: true
   })
   activeSlideIndex: number = 0;
@@ -31,9 +42,12 @@ export class TraimSlider {
   countSlides: number;
 
   @State()
-  slides: HTMLElement[];
+  slideItems: HTMLElement[];
 
-  slotWrapperElement!: HTMLElement;
+  @State()
+  slideIndexes: number[][];
+
+  slidesWrapperElement!: HTMLElement;
 
   slotElement!: HTMLSlotElement;
 
@@ -48,27 +62,42 @@ export class TraimSlider {
       slideIndex = 0;
     }
 
-    const previousSlide = this.slides.find((slide) => slide.hasAttribute('previous'));
+    const previousSlides = this.slideItems.filter((slide) => slide.hasAttribute('previous'));
+    const currentSlides = this.slideItems.filter((slide) => slide.hasAttribute('current'));
 
-    if (previousSlide) {
-      previousSlide.removeAttribute('previous');
+    if (previousSlides.length) {
+      previousSlides.forEach((previousSlide) => previousSlide.removeAttribute('previous'));
     }
 
-    if (this.slides[this.activeSlideIndex]) {
-      this.slides[this.activeSlideIndex].removeAttribute('current');
-      this.slides[this.activeSlideIndex].setAttribute('previous', 'true');
+    if (currentSlides.length) {
+      currentSlides.forEach((currentSlide) => {
+        currentSlide.removeAttribute('current');
+        currentSlide.setAttribute('previous', 'true');
+      });
     }
 
-    if (this.slides[slideIndex]) {
-      this.slides[slideIndex].setAttribute('current', 'true');
+    if (this.slideIndexes[slideIndex]) {
+      // examples:
+      // base 1: [[0], [1], [2]]
+      // base 2: [[0,1], [2,3], [4,5]]
+      // base 3: [[0,1,2], [3,4,5], [5,6,7]]
+      this.slideIndexes[slideIndex].forEach((slideItemIndex) => {
+        if (this.slideItems[slideItemIndex]) {
+          this.slideItems[slideItemIndex].setAttribute('current', 'true');
+        }
+      });
+
       this.activeSlideIndex = slideIndex;
     }
   }
 
   componentDidLoad() {
-    this.slotElement = this.slotWrapperElement.querySelector('slot');
+    if (!this.slotElement) {
+      this.slotElement = this.slidesWrapperElement.querySelector('slot');
+      this.slotElement.addEventListener('slotchange', this.handleSlotChange);
+    }
+
     this.handleSlotChange();
-    this.slotElement.addEventListener('slotchange', this.handleSlotChange);
   }
 
   disconnectedCallback() {
@@ -76,9 +105,24 @@ export class TraimSlider {
   }
 
   handleSlotChange() {
-    this.slides = this.slotElement.assignedElements() as HTMLElement[];
-    this.countSlides = this.slides.length;
-    console.log(this.slides, this.countSlides);
+    this.setupSlides();
+  }
+
+  setupSlides() {
+    this.slideItems = this.slotElement.assignedElements() as HTMLElement[];
+    this.countSlides = Math.floor(this.slideItems.length / this.itemsPerSlide);
+    this.countSlides = this.countSlides ? this.countSlides : 1;
+    this.slideIndexes = [...Array(this.countSlides).keys()].map((i) => {
+      const startItem = i * this.itemsPerSlide;
+      return [...Array(this.itemsPerSlide).keys()].map((j) => startItem + j)
+    });
+
+    const fractions = [...Array(this.itemsPerSlide).keys()].map(() => {
+      return '1fr';
+    });
+
+    this.slidesWrapperElement.style.gridTemplateColumns = fractions.join(' ');
+
     this.gotoSlide(this.activeSlideIndex);
   }
 
@@ -87,7 +131,7 @@ export class TraimSlider {
     return (
       <Host>
         <div class={`slider ${animationClass}`}>
-          <section ref={(el) => this.slotWrapperElement = el as HTMLElement} class={`slider__slides`}>
+          <section ref={(el) => this.slidesWrapperElement = el as HTMLElement} class={`slider__slides`}>
             <slot></slot>
           </section>
           {this.countSlides > 1 && this.controls && (

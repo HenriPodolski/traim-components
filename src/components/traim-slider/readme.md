@@ -14,6 +14,7 @@
 | `controlLeftText`  | `control-left-text`  |             | `string`                                                                                           | `'Previous'`                    |
 | `controlRightText` | `control-right-text` |             | `string`                                                                                           | `'Next'`                        |
 | `controls`         | `controls`           |             | `boolean`                                                                                          | `undefined`                     |
+| `itemsPerSlide`    | `items-per-slide`    |             | `number`                                                                                           | `1`                             |
 | `pagination`       | `pagination`         |             | `boolean`                                                                                          | `undefined`                     |
 
 

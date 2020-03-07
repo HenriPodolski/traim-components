@@ -5,6 +5,12 @@
 .slider {
   position: relative;
 }
+.slider__slides {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  grid-column-gap: 24px;
+}
 .slider__button {
   position: absolute;
   top: 50%;

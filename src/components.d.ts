@@ -45,6 +45,7 @@ export namespace Components {
     'controlLeftText': string;
     'controlRightText': string;
     'controls': boolean;
+    'itemsPerSlide': number;
     'pagination': boolean;
   }
   interface TraimSliderSlide {
@@ -182,6 +183,7 @@ declare namespace LocalJSX {
     'controlLeftText'?: string;
     'controlRightText'?: string;
     'controls'?: boolean;
+    'itemsPerSlide'?: number;
     'pagination'?: boolean;
   }
   interface TraimSliderSlide {

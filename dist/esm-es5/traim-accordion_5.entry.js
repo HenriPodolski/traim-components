@@ -34,6 +34,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 import { r as registerInstance, c as createEvent, h, g as getElement, H as Host } from './core-705deb91.js';
 var TraimAccordion = /** @class */ (function () {
     function TraimAccordion(hostRef) {
@@ -296,50 +303,89 @@ var TraimSlider = /** @class */ (function () {
         this.controlLeftText = 'Previous';
         this.controlRightText = 'Next';
         this.animation = TraimSliderAnimationEnum.NONE;
+        this.itemsPerSlide = 1;
         this.activeSlideIndex = 0;
         this.handleSlotChange = this.handleSlotChange.bind(this);
     }
+    TraimSlider.prototype.watchItemsPerSlide = function () {
+        this.handleSlotChange();
+    };
     TraimSlider.prototype.gotoSlide = function (slideIndex) {
+        var _this = this;
         if (slideIndex < 0) {
             slideIndex = this.countSlides - 1;
         }
         else if (slideIndex > this.countSlides - 1) {
             slideIndex = 0;
         }
-        var previousSlide = this.slides.find(function (slide) { return slide.hasAttribute('previous'); });
-        if (previousSlide) {
-            previousSlide.removeAttribute('previous');
+        var previousSlides = this.slideItems.filter(function (slide) { return slide.hasAttribute('previous'); });
+        var currentSlides = this.slideItems.filter(function (slide) { return slide.hasAttribute('current'); });
+        if (previousSlides.length) {
+            previousSlides.forEach(function (previousSlide) { return previousSlide.removeAttribute('previous'); });
         }
-        if (this.slides[this.activeSlideIndex]) {
-            this.slides[this.activeSlideIndex].removeAttribute('current');
-            this.slides[this.activeSlideIndex].setAttribute('previous', 'true');
+        if (currentSlides.length) {
+            currentSlides.forEach(function (currentSlide) {
+                currentSlide.removeAttribute('current');
+                currentSlide.setAttribute('previous', 'true');
+            });
         }
-        if (this.slides[slideIndex]) {
-            this.slides[slideIndex].setAttribute('current', 'true');
+        if (this.slideIndexes[slideIndex]) {
+            // examples:
+            // base 1: [[0], [1], [2]]
+            // base 2: [[0,1], [2,3], [4,5]]
+            // base 3: [[0,1,2], [3,4,5], [5,6,7]]
+            this.slideIndexes[slideIndex].forEach(function (slideItemIndex) {
+                if (_this.slideItems[slideItemIndex]) {
+                    _this.slideItems[slideItemIndex].setAttribute('current', 'true');
+                }
+            });
             this.activeSlideIndex = slideIndex;
         }
     };
     TraimSlider.prototype.componentDidLoad = function () {
-        this.slotElement = this.slotWrapperElement.querySelector('slot');
+        if (!this.slotElement) {
+            this.slotElement = this.slidesWrapperElement.querySelector('slot');
+            this.slotElement.addEventListener('slotchange', this.handleSlotChange);
+        }
         this.handleSlotChange();
-        this.slotElement.addEventListener('slotchange', this.handleSlotChange);
     };
     TraimSlider.prototype.disconnectedCallback = function () {
         this.slotElement.removeEventListener('slotchange', this.handleSlotChange);
     };
     TraimSlider.prototype.handleSlotChange = function () {
-        this.slides = this.slotElement.assignedElements();
-        this.countSlides = this.slides.length;
-        console.log(this.slides, this.countSlides);
+        this.setupSlides();
+    };
+    TraimSlider.prototype.setupSlides = function () {
+        var _this = this;
+        this.slideItems = this.slotElement.assignedElements();
+        this.countSlides = Math.floor(this.slideItems.length / this.itemsPerSlide);
+        this.countSlides = this.countSlides ? this.countSlides : 1;
+        this.slideIndexes = __spreadArrays(Array(this.countSlides).keys()).map(function (i) {
+            var startItem = i * _this.itemsPerSlide;
+            return __spreadArrays(Array(_this.itemsPerSlide).keys()).map(function (j) { return startItem + j; });
+        });
+        var fractions = __spreadArrays(Array(this.itemsPerSlide).keys()).map(function () {
+            return '1fr';
+        });
+        this.slidesWrapperElement.style.gridTemplateColumns = fractions.join(' ');
         this.gotoSlide(this.activeSlideIndex);
     };
     TraimSlider.prototype.render = function () {
         var _this = this;
         var animationClass = this.animation;
-        return (h(Host, null, h("div", { class: "slider " + animationClass }, h("section", { ref: function (el) { return _this.slotWrapperElement = el; }, class: "slider__slides" }, h("slot", null)), this.countSlides > 1 && this.controls && (h("button", { onClick: function () { return _this.gotoSlide(_this.activeSlideIndex - 1); }, role: "button", class: "slider__button is-left", "aria-label": this.controlLeftText }, h("span", { "aria-hidden": "true", class: "slider__button-inner" }, "\u276E"))), this.countSlides > 1 && this.controls && (h("button", { onClick: function () { return _this.gotoSlide(_this.activeSlideIndex + 1); }, role: "button", class: "slider__button is-right", "aria-label": this.controlRightText }, h("span", { "aria-hidden": "true", class: "slider__button-inner" }, "\u276F"))))));
+        return (h(Host, null, h("div", { class: "slider " + animationClass }, h("section", { ref: function (el) { return _this.slidesWrapperElement = el; }, class: "slider__slides" }, h("slot", null)), this.countSlides > 1 && this.controls && (h("button", { onClick: function () { return _this.gotoSlide(_this.activeSlideIndex - 1); }, role: "button", class: "slider__button is-left", "aria-label": this.controlLeftText }, h("span", { "aria-hidden": "true", class: "slider__button-inner" }, "\u276E"))), this.countSlides > 1 && this.controls && (h("button", { onClick: function () { return _this.gotoSlide(_this.activeSlideIndex + 1); }, role: "button", class: "slider__button is-right", "aria-label": this.controlRightText }, h("span", { "aria-hidden": "true", class: "slider__button-inner" }, "\u276F"))))));
     };
+    Object.defineProperty(TraimSlider, "watchers", {
+        get: function () {
+            return {
+                "itemsPerSlide": ["watchItemsPerSlide"]
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(TraimSlider, "style", {
-        get: function () { return ":host{display:block}.slider{position:relative}.slider__button{position:absolute;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);cursor:pointer;border:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-size:var(--slider-control-button-font-size,14px);padding:var(--slider-padding-horizontal,8px) var(--slider-padding-vertical,16px);color:var(--slider-control-button-color,#000);background-color:var(--slider-control-button-background-color,#f1f1f1)}.slider__button:hover{background-color:var(--slider-control-button-hover-background-color,#ccc)}.slider__button.is-left{left:0}.slider__button.is-right{right:0}"; },
+        get: function () { return ":host{display:block}.slider{position:relative}.slider__slides{display:grid;grid-template-columns:1fr;grid-template-rows:auto;grid-column-gap:24px}.slider__button{position:absolute;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);cursor:pointer;border:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-size:var(--slider-control-button-font-size,14px);padding:var(--slider-padding-horizontal,8px) var(--slider-padding-vertical,16px);color:var(--slider-control-button-color,#000);background-color:var(--slider-control-button-background-color,#f1f1f1)}.slider__button:hover{background-color:var(--slider-control-button-hover-background-color,#ccc)}.slider__button.is-left{left:0}.slider__button.is-right{right:0}"; },
         enumerable: true,
         configurable: true
     });

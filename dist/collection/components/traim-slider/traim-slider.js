@@ -5,8 +5,12 @@ export class TraimSlider {
         this.controlLeftText = 'Previous';
         this.controlRightText = 'Next';
         this.animation = TraimSliderAnimationEnum.NONE;
+        this.itemsPerSlide = 1;
         this.activeSlideIndex = 0;
         this.handleSlotChange = this.handleSlotChange.bind(this);
+    }
+    watchItemsPerSlide() {
+        this.handleSlotChange();
     }
     gotoSlide(slideIndex) {
         if (slideIndex < 0) {
@@ -15,38 +19,62 @@ export class TraimSlider {
         else if (slideIndex > this.countSlides - 1) {
             slideIndex = 0;
         }
-        const previousSlide = this.slides.find((slide) => slide.hasAttribute('previous'));
-        if (previousSlide) {
-            previousSlide.removeAttribute('previous');
+        const previousSlides = this.slideItems.filter((slide) => slide.hasAttribute('previous'));
+        const currentSlides = this.slideItems.filter((slide) => slide.hasAttribute('current'));
+        if (previousSlides.length) {
+            previousSlides.forEach((previousSlide) => previousSlide.removeAttribute('previous'));
         }
-        if (this.slides[this.activeSlideIndex]) {
-            this.slides[this.activeSlideIndex].removeAttribute('current');
-            this.slides[this.activeSlideIndex].setAttribute('previous', 'true');
+        if (currentSlides.length) {
+            currentSlides.forEach((currentSlide) => {
+                currentSlide.removeAttribute('current');
+                currentSlide.setAttribute('previous', 'true');
+            });
         }
-        if (this.slides[slideIndex]) {
-            this.slides[slideIndex].setAttribute('current', 'true');
+        if (this.slideIndexes[slideIndex]) {
+            // examples:
+            // base 1: [[0], [1], [2]]
+            // base 2: [[0,1], [2,3], [4,5]]
+            // base 3: [[0,1,2], [3,4,5], [5,6,7]]
+            this.slideIndexes[slideIndex].forEach((slideItemIndex) => {
+                if (this.slideItems[slideItemIndex]) {
+                    this.slideItems[slideItemIndex].setAttribute('current', 'true');
+                }
+            });
             this.activeSlideIndex = slideIndex;
         }
     }
     componentDidLoad() {
-        this.slotElement = this.slotWrapperElement.querySelector('slot');
+        if (!this.slotElement) {
+            this.slotElement = this.slidesWrapperElement.querySelector('slot');
+            this.slotElement.addEventListener('slotchange', this.handleSlotChange);
+        }
         this.handleSlotChange();
-        this.slotElement.addEventListener('slotchange', this.handleSlotChange);
     }
     disconnectedCallback() {
         this.slotElement.removeEventListener('slotchange', this.handleSlotChange);
     }
     handleSlotChange() {
-        this.slides = this.slotElement.assignedElements();
-        this.countSlides = this.slides.length;
-        console.log(this.slides, this.countSlides);
+        this.setupSlides();
+    }
+    setupSlides() {
+        this.slideItems = this.slotElement.assignedElements();
+        this.countSlides = Math.floor(this.slideItems.length / this.itemsPerSlide);
+        this.countSlides = this.countSlides ? this.countSlides : 1;
+        this.slideIndexes = [...Array(this.countSlides).keys()].map((i) => {
+            const startItem = i * this.itemsPerSlide;
+            return [...Array(this.itemsPerSlide).keys()].map((j) => startItem + j);
+        });
+        const fractions = [...Array(this.itemsPerSlide).keys()].map(() => {
+            return '1fr';
+        });
+        this.slidesWrapperElement.style.gridTemplateColumns = fractions.join(' ');
         this.gotoSlide(this.activeSlideIndex);
     }
     render() {
         const animationClass = this.animation;
         return (h(Host, null,
             h("div", { class: `slider ${animationClass}` },
-                h("section", { ref: (el) => this.slotWrapperElement = el, class: `slider__slides` },
+                h("section", { ref: (el) => this.slidesWrapperElement = el, class: `slider__slides` },
                     h("slot", null)),
                 this.countSlides > 1 && this.controls && (h("button", { onClick: () => this.gotoSlide(this.activeSlideIndex - 1), role: "button", class: `slider__button is-left`, "aria-label": this.controlLeftText },
                     h("span", { "aria-hidden": "true", class: `slider__button-inner` }, "\u276E"))),
@@ -155,6 +183,24 @@ export class TraimSlider {
             "reflect": false,
             "defaultValue": "TraimSliderAnimationEnum.NONE"
         },
+        "itemsPerSlide": {
+            "type": "number",
+            "mutable": true,
+            "complexType": {
+                "original": "number",
+                "resolved": "number",
+                "references": {}
+            },
+            "required": false,
+            "optional": false,
+            "docs": {
+                "tags": [],
+                "text": ""
+            },
+            "attribute": "items-per-slide",
+            "reflect": false,
+            "defaultValue": "1"
+        },
         "activeSlideIndex": {
             "type": "number",
             "mutable": true,
@@ -176,6 +222,11 @@ export class TraimSlider {
     }; }
     static get states() { return {
         "countSlides": {},
-        "slides": {}
+        "slideItems": {},
+        "slideIndexes": {}
     }; }
+    static get watchers() { return [{
+            "propName": "itemsPerSlide",
+            "methodName": "watchItemsPerSlide"
+        }]; }
 }
