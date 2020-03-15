@@ -29,11 +29,11 @@
     }
 
     &.is-left {
-      left: 0;
+      left: var(--slider-control-button-left, 0);
     }
 
     &.is-right {
-      right: 0;
+      right: var(--slider-control-button-right, 0);
     }
   }
 }
