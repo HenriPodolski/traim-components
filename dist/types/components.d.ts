@@ -71,6 +71,10 @@ export namespace Components {
     'loading': boolean;
     'type': string;
   }
+  interface TraimToggle {
+    'isToggled': () => Promise<boolean>;
+    'toggled': boolean;
+  }
   interface TraimTooltip {
     'appearance': TooltipAppearanceEnum;
     'content': string;
@@ -137,6 +141,12 @@ declare global {
     new (): HTMLTraimTimelineItemElement;
   };
 
+  interface HTMLTraimToggleElement extends Components.TraimToggle, HTMLStencilElement {}
+  var HTMLTraimToggleElement: {
+    prototype: HTMLTraimToggleElement;
+    new (): HTMLTraimToggleElement;
+  };
+
   interface HTMLTraimTooltipElement extends Components.TraimTooltip, HTMLStencilElement {}
   var HTMLTraimTooltipElement: {
     prototype: HTMLTraimTooltipElement;
@@ -152,6 +162,7 @@ declare global {
     'traim-tabs': HTMLTraimTabsElement;
     'traim-timeline': HTMLTraimTimelineElement;
     'traim-timeline-item': HTMLTraimTimelineItemElement;
+    'traim-toggle': HTMLTraimToggleElement;
     'traim-tooltip': HTMLTraimTooltipElement;
   }
 }
@@ -209,6 +220,10 @@ declare namespace LocalJSX {
     'loading'?: boolean;
     'type'?: string;
   }
+  interface TraimToggle {
+    'onChanged'?: (event: CustomEvent<any>) => void;
+    'toggled'?: boolean;
+  }
   interface TraimTooltip {
     'appearance'?: TooltipAppearanceEnum;
     'content'?: string;
@@ -227,6 +242,7 @@ declare namespace LocalJSX {
     'traim-tabs': TraimTabs;
     'traim-timeline': TraimTimeline;
     'traim-timeline-item': TraimTimelineItem;
+    'traim-toggle': TraimToggle;
     'traim-tooltip': TraimTooltip;
   }
 }
@@ -246,6 +262,7 @@ declare module "@stencil/core" {
       'traim-tabs': LocalJSX.TraimTabs & JSXBase.HTMLAttributes<HTMLTraimTabsElement>;
       'traim-timeline': LocalJSX.TraimTimeline & JSXBase.HTMLAttributes<HTMLTraimTimelineElement>;
       'traim-timeline-item': LocalJSX.TraimTimelineItem & JSXBase.HTMLAttributes<HTMLTraimTimelineItemElement>;
+      'traim-toggle': LocalJSX.TraimToggle & JSXBase.HTMLAttributes<HTMLTraimToggleElement>;
       'traim-tooltip': LocalJSX.TraimTooltip & JSXBase.HTMLAttributes<HTMLTraimTooltipElement>;
     }
   }
