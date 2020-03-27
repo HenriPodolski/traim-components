@@ -40,8 +40,6 @@
   }
 
   &__track {
-    --toggle-track-color: var(--color-default, #74748c);
-
     flex: 0 1 auto;
     padding-right: var(--grid-gutter, 8px);
     padding-left: var(--grid-gutter, 8px);
@@ -50,7 +48,7 @@
     width: 1em;
     height: 0.5em;
     margin: 0 0.5em;
-    background-color: var(--toggle-track-color);
+    background-color: var(--toggle-track-color, #74748c);
     border-radius: var(--border-radius-rounded, 30em);
   }
 
