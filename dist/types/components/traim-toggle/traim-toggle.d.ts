@@ -5,6 +5,7 @@ export declare class TraimToggle {
     onChange: EventEmitter;
     componentDidLoad(): void;
     isToggled(): Promise<boolean>;
+    watchToggled(newValue: boolean): void;
     toggle(): void;
     handleToggle(e: any): void;
     render(): any;

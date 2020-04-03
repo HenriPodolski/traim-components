@@ -25,6 +25,10 @@ export class TraimToggle {
   }
 
   @Watch('toggled')
+  watchToggled(newValue: boolean) {
+    this._toggled = newValue;
+  }
+
   toggle() {
     this._toggled = !this._toggled;
   }

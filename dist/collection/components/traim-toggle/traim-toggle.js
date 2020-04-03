@@ -10,6 +10,9 @@ export class TraimToggle {
     async isToggled() {
         return this._toggled;
     }
+    watchToggled(newValue) {
+        this._toggled = newValue;
+    }
     toggle() {
         this._toggled = !this._toggled;
     }
@@ -92,6 +95,6 @@ export class TraimToggle {
     }; }
     static get watchers() { return [{
             "propName": "toggled",
-            "methodName": "toggle"
+            "methodName": "watchToggled"
         }]; }
 }

@@ -52,6 +52,9 @@ var TraimToggle = /** @class */ (function () {
             });
         });
     };
+    class_1.prototype.watchToggled = function (newValue) {
+        this._toggled = newValue;
+    };
     class_1.prototype.toggle = function () {
         this._toggled = !this._toggled;
     };
@@ -67,7 +70,7 @@ var TraimToggle = /** @class */ (function () {
     Object.defineProperty(class_1, "watchers", {
         get: function () {
             return {
-                "toggled": ["toggle"]
+                "toggled": ["watchToggled"]
             };
         },
         enumerable: true,
