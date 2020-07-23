@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Component, h, Element, Event, State, Method, Listen } from '@stencil/core';
 export class TraimTabs {
     componentWillLoad() {
         this.tabs = Array.from(this.elem.querySelectorAll('traim-tab'));

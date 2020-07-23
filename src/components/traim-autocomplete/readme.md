@@ -14,6 +14,7 @@
 | `itemsJSON`    | `items-json`    |             | `string`              | `undefined` |
 | `placeholder`  | `placeholder`   |             | `string`              | `undefined` |
 | `reset`        | `reset`         |             | `boolean`             | `undefined` |
+| `selectedItem` | --              |             | `IAutoCompleteItem`   | `undefined` |
 | `uid`          | `uid`           |             | `string`              | `undefined` |
 
 
@@ -27,7 +28,7 @@
 
 ## Methods
 
-### `setItems(items: IAutoCompleteItem[]) => Promise<void>`
+### `setItems(items: Array<IAutoCompleteItem>) => Promise<void>`
 
 
 

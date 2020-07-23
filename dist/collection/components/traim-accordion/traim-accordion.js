@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Component, Element, Event, Listen, h, Prop } from '@stencil/core';
 export class TraimAccordion {
     constructor() {
         this.useCounter = false;

@@ -41,6 +41,17 @@ export class TraimAutocomplete {
   @Prop({ mutable: true })
   items: IAutoCompleteItem[] = [];
 
+  @Prop({ mutable: true })
+  selectedItem: IAutoCompleteItem;
+
+  @Watch('selectedItem')
+  selectedItemChangedHandler(newValue: IAutoCompleteItem) {
+    console.log('selectedItem', newValue);
+    if (newValue.key && newValue.value && newValue.value.title) {
+      this.select(newValue);
+    }
+  }
+
   @Watch('items')
   itemsChangedHandler(newValue: IAutoCompleteItem[]) {
     if (!newValue.length) {
@@ -59,8 +70,6 @@ export class TraimAutocomplete {
   @Event({ eventName: 'searchAutocomplete' })
   onSearch: EventEmitter;
 
-  @State()
-  selectedItem: IAutoCompleteItem;
 
   @State()
   activeItem: IAutoCompleteItem;

@@ -1,4 +1,4 @@
-import { h, Host } from "@stencil/core";
+import { Component, h, Host, Prop } from '@stencil/core';
 import { TooltipAppearanceEnum, TooltipOrientationsEnum } from './traim-tooltip.enum';
 export class TraimTooltip {
     constructor() {

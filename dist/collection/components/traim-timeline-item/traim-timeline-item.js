@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Component, h, Prop } from '@stencil/core';
 export class TraimTimelineItem {
     render() {
         const typeClass = this.type ? `is-${this.type}` : '';

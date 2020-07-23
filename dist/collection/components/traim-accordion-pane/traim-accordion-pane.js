@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Component, Event, Method, Prop, State, h } from '@stencil/core';
 export class TraimAccordionPane {
     constructor() {
         this._isOpen = false;

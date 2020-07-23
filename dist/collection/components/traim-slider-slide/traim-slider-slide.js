@@ -1,4 +1,4 @@
-import { Host, h } from "@stencil/core";
+import { Component, Host, h, Prop } from '@stencil/core';
 export class TraimSliderSlide {
     render() {
         const activeClass = this.current ? 'is-active' : '';

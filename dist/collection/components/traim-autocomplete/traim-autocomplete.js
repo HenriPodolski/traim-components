@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Component, Event, Element, h, Listen, Method, Prop, State, Watch } from '@stencil/core';
 export class TraimAutocomplete {
     constructor() {
         this.items = [];
@@ -12,6 +12,12 @@ export class TraimAutocomplete {
     }
     emptyMessageChangedHandler(newValue) {
         this.emptyMessage = newValue;
+    }
+    selectedItemChangedHandler(newValue) {
+        console.log('selectedItem', newValue);
+        if (newValue.key && newValue.value && newValue.value.title) {
+            this.select(newValue);
+        }
     }
     itemsChangedHandler(newValue) {
         if (!newValue.length) {
@@ -250,10 +256,29 @@ export class TraimAutocomplete {
                 "text": ""
             },
             "defaultValue": "[]"
+        },
+        "selectedItem": {
+            "type": "unknown",
+            "mutable": true,
+            "complexType": {
+                "original": "IAutoCompleteItem",
+                "resolved": "IAutoCompleteItem",
+                "references": {
+                    "IAutoCompleteItem": {
+                        "location": "import",
+                        "path": "./interfaces"
+                    }
+                }
+            },
+            "required": false,
+            "optional": false,
+            "docs": {
+                "tags": [],
+                "text": ""
+            }
         }
     }; }
     static get states() { return {
-        "selectedItem": {},
         "activeItem": {},
         "_isOpen": {},
         "value": {}
@@ -292,7 +317,7 @@ export class TraimAutocomplete {
     static get methods() { return {
         "setItems": {
             "complexType": {
-                "signature": "(items: IAutoCompleteItem[]) => Promise<void>",
+                "signature": "(items: Array<IAutoCompleteItem>) => Promise<void>",
                 "parameters": [{
                         "tags": [],
                         "text": ""
@@ -324,6 +349,9 @@ export class TraimAutocomplete {
         }, {
             "propName": "emptyMessage",
             "methodName": "emptyMessageChangedHandler"
+        }, {
+            "propName": "selectedItem",
+            "methodName": "selectedItemChangedHandler"
         }, {
             "propName": "items",
             "methodName": "itemsChangedHandler"

@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Component, Event, h, Method, Prop, State, Watch } from '@stencil/core';
 export class TraimToggle {
     constructor() {
         this.toggled = false;

@@ -1,4 +1,4 @@
-import { EventEmitter } from '../../stencil.core';
+import { EventEmitter } from '../../stencil-public-runtime';
 import { IAutoCompleteItem } from './interfaces';
 export declare class TraimAutocomplete {
     placeholder: string;
@@ -9,10 +9,11 @@ export declare class TraimAutocomplete {
     emptyMessage: string;
     emptyMessageChangedHandler(newValue: string): void;
     items: IAutoCompleteItem[];
+    selectedItem: IAutoCompleteItem;
+    selectedItemChangedHandler(newValue: IAutoCompleteItem): void;
     itemsChangedHandler(newValue: IAutoCompleteItem[]): void;
     onSelect: EventEmitter;
     onSearch: EventEmitter;
-    selectedItem: IAutoCompleteItem;
     activeItem: IAutoCompleteItem;
     _isOpen: boolean;
     value: string;

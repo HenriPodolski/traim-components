@@ -1,4 +1,4 @@
-import { h, Host } from "@stencil/core";
+import { Component, h, Host, Prop, State, Watch } from '@stencil/core';
 import { TraimSliderAnimationEnum } from './traim-slider-animation.enum';
 export class TraimSlider {
     constructor() {

@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Component, h, Prop } from '@stencil/core';
 export class TraimTimeline {
     render() {
         const alternateClass = this.alternate ? 'is-alternate' : '';

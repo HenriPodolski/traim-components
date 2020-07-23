@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Component, Event, h, Prop, Watch } from '@stencil/core';
 export class TraimTab {
     watchHeader() {
         this.onTabHeaderChange.emit({});
